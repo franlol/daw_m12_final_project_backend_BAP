@@ -1,5 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
+const emailRegex = require('email-regex');
 
 const User = require('../database/models/User');
 const router = express.Router();
@@ -11,20 +12,49 @@ router.post('/signup', async (req, res, next) => {
   const { username, name, surname, email, password, location } = req.body;
 
   if (!username || !name || !surname || !email || !password || !location) {
-    res.status(404); //TODO
+    res.status(422);
     return res.json({
       message: 'All fields are required'
     });
   }
 
-  // Todo check fields
+  const validUsername = username.length > 3;
 
+  if (!validUsername) {
+    res.status(422);
+    return res.json({
+      message: 'Invalid username'
+    });
+  }
+
+  const validEmail = emailRegex({ exact: true }).test(email);
+
+  if (!validEmail) {
+    res.status(422);
+    return res.json({
+      message: 'Invalid email'
+    });
+  }
+
+  //More than 8 characters, 1 lowercase letter, 1 uppercase letter and 1 digit
+  const passRegex = '(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)[0-9a-zA-Z!@#$%^&*()]*$';
+
+  const validPass = passRegex.test(password);
+  
+  if(!validPass){
+    res.status(422);
+    return res.json({
+      message: 'Invalid password'
+    });
+  }
+
+  //TODO validate location??
 
   try {
     const user = await User.findOne({ email });
 
     if (user) {
-      res.status(404); //TODO
+      res.status(409);
       return res.json({
         message: 'Email already taken'
       });
