@@ -12,7 +12,7 @@ const userSchema = new Schema(  {
       type: String,
       required: true
     },
-    cognoms: {
+    surname: {
       type: String,
       required: true
     },
