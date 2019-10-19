@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
   res.send('index')
 })
 
-// Middelwares
+// Middelware
 app.use(router);
 
 // Middlewares errores
