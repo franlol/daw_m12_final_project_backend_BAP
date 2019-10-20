@@ -10,7 +10,7 @@ router.post('/signup', async (req, res, next) => {
   // GET = query
   // PARAMETRE = params
   const { username, name, surname, email, password, location } = req.body;
-
+  
   if (!username || !name || !surname || !email || !password || !location) {
     res.status(422);
     return res.json({
@@ -18,7 +18,9 @@ router.post('/signup', async (req, res, next) => {
     });
   }
 
-  const validUsername = username.length > 3;
+  const onlyLettersRegex = new RegExp("^[a-zA-Z]+$");
+
+  const validUsername = (username.length > 3 && onlyLettersRegex.test(username));
 
   if (!validUsername) {
     res.status(422);
@@ -26,6 +28,8 @@ router.post('/signup', async (req, res, next) => {
       message: 'Invalid username'
     });
   }
+
+  const lowerUsername = username.toLowerCase();
 
   const validEmail = emailRegex({ exact: true }).test(email);
 
@@ -37,7 +41,7 @@ router.post('/signup', async (req, res, next) => {
   }
 
   //More than 8 characters, 1 lowercase letter, 1 uppercase letter and 1 digit
-  const passRegex = '(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)[0-9a-zA-Z!@#$%^&*()]*$';
+  const passRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
 
   const validPass = passRegex.test(password);
   
@@ -64,7 +68,7 @@ router.post('/signup', async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, satRounds);
 
     const newUser = {
-      username,
+      username : lowerUsername,
       name,
       surname,
       email,
@@ -95,7 +99,7 @@ router.post('/login', async (req, res, next) => {
   // CHeck fields
 
   if (!email || !password) {
-    res.status(404); // TODO
+    res.status(422); 
     return res.json({
       message: 'Email and password are required.'
     });
@@ -105,7 +109,7 @@ router.post('/login', async (req, res, next) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      res.status(404); // TODO
+      res.status(422);
       return res.json({
         message: 'Email or password incorrect'
       });
@@ -114,7 +118,7 @@ router.post('/login', async (req, res, next) => {
     const hashedPassword = await bcrypt.compare(password, user.password);
 
     if (!hashedPassword) {
-      res.status(404); // TODO
+      res.status(422);
       return res.json({
         message: 'Email or password incorrect'
       });

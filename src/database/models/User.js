@@ -34,5 +34,5 @@ const userSchema = new Schema(  {
   });
 
 const User = mongoose.model('User', userSchema);
-eventSchema.index({ location: '2dsphere' });
+userSchema.index({ location: '2dsphere' });
 module.exports = User;
