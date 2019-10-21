@@ -1,5 +1,6 @@
 // Node Modules
 const express = require('express');
+const dotenv = require('dotenv');
 
 // Own modules
 const routes = require('./routes');
@@ -9,6 +10,7 @@ const app = express();
 
 // Middlewares
 app.use(express.json());
+dotenv.config();
 app.use(routes);
 
 app.use((req, res) => {

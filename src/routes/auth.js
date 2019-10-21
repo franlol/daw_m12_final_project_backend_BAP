@@ -1,16 +1,18 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const emailRegex = require('email-regex');
+const jwt = require('jsonwebtoken');
 
 const User = require('../database/models/User');
 const router = express.Router();
+const verifyToken = require('./middlewares/auth');
 
 router.post('/signup', async (req, res, next) => {
   // POST = body
   // GET = query
   // PARAMETRE = params
   const { username, name, surname, email, password, location } = req.body;
-  
+
   if (!username || !name || !surname || !email || !password || !location) {
     res.status(422);
     return res.json({
@@ -44,8 +46,8 @@ router.post('/signup', async (req, res, next) => {
   const passRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
 
   const validPass = passRegex.test(password);
-  
-  if(!validPass){
+
+  if (!validPass) {
     res.status(422);
     return res.json({
       message: 'Invalid password'
@@ -68,7 +70,7 @@ router.post('/signup', async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, satRounds);
 
     const newUser = {
-      username : lowerUsername,
+      username: lowerUsername,
       name,
       surname,
       email,
@@ -77,9 +79,13 @@ router.post('/signup', async (req, res, next) => {
     }
 
     await User.create(newUser);
+    delete newUser.password;
 
-    //TODO crear token
-    const token = 'asdasd';
+    const token = jwt.sign(newUser, process.env.TOKEN_KEY, {
+      expiresIn: '24h'
+    });
+
+    console.log(token);
 
     res.status(200);
     res.json({
@@ -96,17 +102,15 @@ router.post('/signup', async (req, res, next) => {
 router.post('/login', async (req, res, next) => {
   const { email, password } = req.body;
 
-  // CHeck fields
-
   if (!email || !password) {
-    res.status(422); 
+    res.status(422);
     return res.json({
       message: 'Email and password are required.'
     });
   }
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).lean();
 
     if (!user) {
       res.status(422);
@@ -124,8 +128,11 @@ router.post('/login', async (req, res, next) => {
       });
     }
 
-    // TODO create token
-    const token = 'asdasdsa8asd8';
+    delete user.password;
+
+    const token = jwt.sign(user, process.env.TOKEN_KEY, {
+      expiresIn: '24h'
+    });
 
     res.status(200);
     res.json({
@@ -133,10 +140,14 @@ router.post('/login', async (req, res, next) => {
       token
     });
 
-  } catch (error) {
+  } catch (err) {
     next(err);
   }
 
+});
+
+router.get('/profile', verifyToken, (req, res) => {
+  res.json({ 'user': res.user });
 });
 
 module.exports = router;
