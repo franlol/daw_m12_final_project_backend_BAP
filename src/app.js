@@ -13,6 +13,7 @@ app.use(express.json());
 dotenv.config();
 app.use(routes);
 
+// TODO extract 4xx and 5xx middlewares
 app.use((req, res) => {
   res.status(404);
   res.json({

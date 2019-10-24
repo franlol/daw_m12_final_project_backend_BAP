@@ -2,9 +2,7 @@ const mongoose = require('mongoose');
 
 const dbConnection = async () => {
   try {
-    // TODO environment varialbes
-    // process.env.DB_URI
-    await mongoose.connect('mongodb://localhost:27017/BAP', {
+    await mongoose.connect(`${process.env.DB_URI}:${process.env.DB_PORT}/${process.env.DB_COLLECTION}`, {
       useUnifiedTopology: true,
       useNewUrlParser: true
     });

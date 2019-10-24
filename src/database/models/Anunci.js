@@ -19,4 +19,5 @@ const anunciSchema = new Schema(
 );
 
 const Anunci = mongoose.model('Anunci', anunciSchema);
+
 module.exports = Anunci;

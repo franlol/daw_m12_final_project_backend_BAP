@@ -21,4 +21,5 @@ const citaSchema = new Schema(
 );
 
 const Cita = mongoose.model('Cita', citaSchema);
+
 module.exports = Cita;
