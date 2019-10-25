@@ -12,7 +12,6 @@ const init = async () => {
     console.log('APP err: ', err);
     return;
   }
-
 }
 
 init();

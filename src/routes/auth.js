@@ -105,6 +105,7 @@ router.post('/login', async (req, res, next) => {
   if (!email || !password) {
     res.status(422);
     return res.json({
+      auth: false,
       message: 'Email and password are required.'
     });
   }
@@ -115,6 +116,7 @@ router.post('/login', async (req, res, next) => {
     if (!user) {
       res.status(422);
       return res.json({
+        auth: false,
         message: 'Email or password incorrect'
       });
     }
@@ -124,6 +126,7 @@ router.post('/login', async (req, res, next) => {
     if (!hashedPassword) {
       res.status(422);
       return res.json({
+        auth: false,
         message: 'Email or password incorrect'
       });
     }
@@ -136,7 +139,7 @@ router.post('/login', async (req, res, next) => {
 
     res.status(200);
     res.json({
-      message: 'User logged in',
+      auth: true,
       token
     });
 

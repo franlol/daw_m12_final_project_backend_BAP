@@ -5,7 +5,6 @@ const verifyToken = (req, res, next) => {
 
   try {
     const decrypted = jwt.verify(token, process.env.TOKEN_KEY);
-    res.user = decrypted;
 
     const expiry = decrypted.exp;
     const now = new Date();
@@ -17,6 +16,8 @@ const verifyToken = (req, res, next) => {
         message: 'Token expired',
       });
     }
+
+    res.user = decrypted;
 
   } catch (err) {
     res.status(401);
