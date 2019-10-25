@@ -1,7 +1,7 @@
 // Node Modules
 const express = require('express');
 const dotenv = require('dotenv');
-
+const cors = require('cors');
 // Own modules
 const routes = require('./routes');
 
@@ -9,6 +9,7 @@ const routes = require('./routes');
 const app = express();
 
 // Middlewares
+app.use(cors());
 app.use(express.json());
 dotenv.config();
 app.use(routes);
