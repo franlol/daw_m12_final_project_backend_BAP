@@ -140,7 +140,7 @@ router.post('/login', async (req, res, next) => {
     res.status(200);
     res.json({
       auth: true,
-      token
+      token: `Bearer ${token}`
     });
 
   } catch (err) {
