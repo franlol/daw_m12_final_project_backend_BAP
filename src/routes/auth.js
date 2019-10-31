@@ -1,54 +1,19 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
-const emailRegex = require('email-regex');
 const jwt = require('jsonwebtoken');
 
 const User = require('../database/models/User');
-const router = express.Router();
+
 const verifyToken = require('./middlewares/auth');
+const { checkUserFields, verifyUserFields, checkLoginFields } = require('./middlewares/fields');
 
-router.post('/signup', async (req, res, next) => {
+const router = express.Router();
+
+router.post('/signup', checkUserFields, verifyUserFields, async (req, res, next) => {
   const { username, name, surname, email, password, cp } = req.body;
-
-  if (!username || !name || !surname || !email || !password || !cp) {
-    res.status(422);
-    return res.json({
-      message: 'All fields are required'
-    });
-  }
-
-  const onlyLettersRegex = new RegExp("^[a-zA-Z]+$");
-  const validUsername = (username.length > 3 && onlyLettersRegex.test(username));
-  if (!validUsername) {
-    res.status(422);
-    return res.json({
-      auth: false,
-      message: 'Invalid username'
-    });
-  }
-
-  const validEmail = emailRegex({ exact: true }).test(email);
-  if (!validEmail) {
-    res.status(422);
-    return res.json({
-      auth: false,
-      message: 'Invalid email'
-    });
-  }
-
-  //More than 8 characters, 1 lowercase letter, 1 uppercase letter and 1 digit
-  const passRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
-  const validPass = passRegex.test(password);
-  if (!validPass) {
-    res.status(422);
-    return res.json({
-      message: 'Invalid password'
-    });
-  }
 
   // TODO validate CP
   // TODO Create location from CP
-
 
   try {
     const user = await User.findOne({ email });
@@ -83,8 +48,6 @@ router.post('/signup', async (req, res, next) => {
       expiresIn: '24h'
     });
 
-    console.log(token);
-
     res.status(200);
     res.json({
       auth: true,
@@ -95,19 +58,10 @@ router.post('/signup', async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-
 });
 
-router.post('/login', async (req, res, next) => {
+router.post('/login', checkLoginFields, async (req, res, next) => {
   const { email, password } = req.body;
-
-  if (!email || !password) {
-    res.status(422);
-    return res.json({
-      auth: false,
-      message: 'Email and password are required.'
-    });
-  }
 
   try {
     const user = await User.findOne({ email }).lean();
@@ -119,8 +73,8 @@ router.post('/login', async (req, res, next) => {
       });
     }
 
-    const hashedPassword = await bcrypt.compare(password, user.password);
-    if (!hashedPassword) {
+    const compare = await bcrypt.compare(password, user.password);
+    if (!compare) {
       res.status(422);
       return res.json({
         auth: false,
@@ -129,7 +83,7 @@ router.post('/login', async (req, res, next) => {
     }
 
     delete user.password;
-    console.log("user", user)
+
     const token = jwt.sign(user, process.env.TOKEN_KEY, {
       expiresIn: '24h'
     });
@@ -143,7 +97,6 @@ router.post('/login', async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-
 });
 
 router.get('/profile', verifyToken, (req, res) => {
