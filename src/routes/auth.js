@@ -8,12 +8,9 @@ const router = express.Router();
 const verifyToken = require('./middlewares/auth');
 
 router.post('/signup', async (req, res, next) => {
-  // POST = body
-  // GET = query
-  // PARAMETRE = params
-  const { username, name, surname, email, password, location } = req.body;
+  const { username, name, surname, email, password, cp } = req.body;
 
-  if (!username || !name || !surname || !email || !password || !location) {
+  if (!username || !name || !surname || !email || !password || !cp) {
     res.status(422);
     return res.json({
       message: 'All fields are required'
@@ -21,32 +18,27 @@ router.post('/signup', async (req, res, next) => {
   }
 
   const onlyLettersRegex = new RegExp("^[a-zA-Z]+$");
-
   const validUsername = (username.length > 3 && onlyLettersRegex.test(username));
-
   if (!validUsername) {
     res.status(422);
     return res.json({
+      auth: false,
       message: 'Invalid username'
     });
   }
 
-  const lowerUsername = username.toLowerCase();
-
   const validEmail = emailRegex({ exact: true }).test(email);
-
   if (!validEmail) {
     res.status(422);
     return res.json({
+      auth: false,
       message: 'Invalid email'
     });
   }
 
   //More than 8 characters, 1 lowercase letter, 1 uppercase letter and 1 digit
   const passRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
-
   const validPass = passRegex.test(password);
-
   if (!validPass) {
     res.status(422);
     return res.json({
@@ -54,7 +46,9 @@ router.post('/signup', async (req, res, next) => {
     });
   }
 
-  //TODO validate location??
+  // TODO validate CP
+  // TODO Create location from CP
+
 
   try {
     const user = await User.findOne({ email });
@@ -62,6 +56,7 @@ router.post('/signup', async (req, res, next) => {
     if (user) {
       res.status(409);
       return res.json({
+        auth: false,
         message: 'Email already taken'
       });
     }
@@ -70,18 +65,21 @@ router.post('/signup', async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, satRounds);
 
     const newUser = {
-      username: lowerUsername,
+      username: username.toLowerCase(),
       name,
       surname,
       email,
       password: hashedPassword,
-      location
+      cp,
+      location: [12, 12]
     }
 
-    await User.create(newUser);
-    delete newUser.password;
+    const createdUser = await User.create(newUser);
+    const leanUser = await User.findOne({ _id: createdUser._id }).lean();
 
-    const token = jwt.sign(newUser, process.env.TOKEN_KEY, {
+    delete leanUser.password;
+
+    const token = jwt.sign(leanUser, process.env.TOKEN_KEY, {
       expiresIn: '24h'
     });
 
@@ -89,6 +87,7 @@ router.post('/signup', async (req, res, next) => {
 
     res.status(200);
     res.json({
+      auth: true,
       message: 'User created',
       token
     });
@@ -112,7 +111,6 @@ router.post('/login', async (req, res, next) => {
 
   try {
     const user = await User.findOne({ email }).lean();
-
     if (!user) {
       res.status(422);
       return res.json({
@@ -122,7 +120,6 @@ router.post('/login', async (req, res, next) => {
     }
 
     const hashedPassword = await bcrypt.compare(password, user.password);
-
     if (!hashedPassword) {
       res.status(422);
       return res.json({
@@ -132,7 +129,7 @@ router.post('/login', async (req, res, next) => {
     }
 
     delete user.password;
-
+    console.log("user", user)
     const token = jwt.sign(user, process.env.TOKEN_KEY, {
       expiresIn: '24h'
     });
@@ -151,6 +148,26 @@ router.post('/login', async (req, res, next) => {
 
 router.get('/profile', verifyToken, (req, res) => {
   res.json({ 'user': res.user });
+});
+
+// TEMPORAL ROUTE to development purposes
+router.delete('/delete/:username', async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    await User.deleteOne({ username });
+
+    res.status(200);
+    res.json({
+      auth: true,
+      message: `${username} deleted.`
+    });
+  } catch (error) {
+    res.status(500);
+    return res.json({
+      message: `Error trying to delete user ${username}.`
+    });
+  }
 });
 
 module.exports = router;

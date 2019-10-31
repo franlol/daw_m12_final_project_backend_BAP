@@ -27,6 +27,10 @@ const userSchema = new Schema({
   location: {
     type: { type: String },
     coordinates: [Number]
+  },
+  cp: {
+    type: String,
+    required: true
   }
 },
   {
