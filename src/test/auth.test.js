@@ -4,7 +4,6 @@ const dotenv = require('dotenv');
 const app = require('../app');
 const dbConnection = require('../database')
 const data = require('./config');
-
 dotenv.config();
 
 describe('/LOGIN testing', () => {
@@ -20,7 +19,7 @@ describe('/LOGIN testing', () => {
     await db.close();
   });
 
-  test('Should not login a unexistent username', async () => {
+  test('Should not login a unexistent username.', async () => {
     const res = await request(app)
       .post('/auth/login')
       .send({
@@ -32,7 +31,7 @@ describe('/LOGIN testing', () => {
     expect(res.body.auth).toBe(false);
   });
 
-  test('Should not login with incorrect credentials', async () => {
+  test('Should not login with incorrect credentials.', async () => {
     const res = await request(app)
       .post('/auth/login')
       .send({
@@ -44,7 +43,7 @@ describe('/LOGIN testing', () => {
     expect(res.body.auth).toBe(false);
   });
 
-  test('Should not login with empty fields', async () => {
+  test('Should not login with empty fields.', async () => {
     const res = await request(app)
       .post('/auth/login')
       .send({
@@ -56,7 +55,7 @@ describe('/LOGIN testing', () => {
     expect(res.body.auth).toBe(false);
   });
 
-  test('Should login a moked user', async () => {
+  test('Should login a moked user.', async () => {
     const res = await request(app)
       .post('/auth/login')
       .send({
@@ -83,7 +82,7 @@ describe('/SIGNUP testing', () => {
     await db.close();
   });
 
-  test('Should not sign up a new user with invalid password', async () => {
+  test('Should not sign up a new user with invalid password.', async () => {
     const res = await request(app)
       .post('/auth/signup')
       .send({
@@ -100,7 +99,7 @@ describe('/SIGNUP testing', () => {
     expect(res.body.auth).toBe(false);
   });
 
-  test('Should not sign up a new user with invalid username', async () => {
+  test('Should not sign up a new user with invalid username.', async () => {
     const res = await request(app)
       .post('/auth/signup')
       .send({
@@ -117,7 +116,7 @@ describe('/SIGNUP testing', () => {
     expect(res.body.auth).toBe(false);
   });
 
-  test('Should sign up a new user', async () => {
+  test('Should sign up a new user.', async () => {
     const res = await request(app)
       .post('/auth/signup')
       .send({
@@ -135,7 +134,7 @@ describe('/SIGNUP testing', () => {
     expect(res.body).toHaveProperty('token');
   });
 
-  test('Should not sign up a existing user', async () => {
+  test('Should not sign up a existing user.', async () => {
     const res = await request(app)
       .post('/auth/signup')
       .send({
@@ -152,7 +151,7 @@ describe('/SIGNUP testing', () => {
     expect(res.body.auth).toBe(false);
   });
 
-  test('Should not sign up with empty fields', async () => {
+  test('Should not sign up with empty fields.', async () => {
     const res = await request(app)
       .post('/auth/signup')
       .send({
@@ -168,8 +167,4 @@ describe('/SIGNUP testing', () => {
     expect(res.status).toEqual(422);
     expect(res.body.auth).toBe(false);
   });
-
-
-
-
 });
