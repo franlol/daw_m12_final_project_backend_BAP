@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 const router = express.Router();
 
 const User = require('../database/models/User');
@@ -7,12 +8,12 @@ const User = require('../database/models/User');
 const verifyToken = require('./middlewares/auth');
 const { checkUserFields, verifyUserFields } = require('./middlewares/fields');
 
-router.get('/', (req, res) => {
+router.get('/', verifyToken, (req, res) => {
   const { user } = req.session;
 
   if (!user) {
     res.status(400);
-    res.json({
+    return res.json({
       message: 'Not logged'
     });
   }
@@ -26,14 +27,22 @@ router.post('/', verifyToken, checkUserFields, verifyUserFields, async (req, res
     delete req.body.password;
     await User.findOneAndUpdate({ _id: req.session.user._id }, { ...req.body }).select("-password");
 
-    req.session.user = {
+    const updated = {
       ...req.session.user,
       ...req.body
     }
 
+    delete updated.exp;
+    const token = jwt.sign(updated, process.env.TOKEN_KEY, {
+      expiresIn: '24h'
+    });
+
+    req.session.user = updated;
+
     res.status(200);
     res.json({
       message: `User updated`,
+      token,
       updatedUser: req.session.user
     });
 

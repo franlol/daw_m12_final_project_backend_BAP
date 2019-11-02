@@ -36,12 +36,12 @@ router.post('/signup', checkUserFields, verifyUserFields, async (req, res, next)
       email,
       password: hashedPassword,
       cp,
-      location: [12, 12]
+      location: [12, 12] // TODO CALC
     }
 
     const createdUser = await User.create(newUser);
     const leanUser = await User.findOne({ _id: createdUser._id }).lean();
-
+    // TODO select -password
     delete leanUser.password;
 
     const token = jwt.sign(leanUser, process.env.TOKEN_KEY, {
@@ -103,11 +103,7 @@ router.post('/login', checkLoginFields, async (req, res, next) => {
   }
 });
 
-router.get('/profile', verifyToken, (req, res) => {
-  res.json({ 'user': req.session.user });
-});
-
-// TEMPORAL ROUTE to development purposes
+// TEMPORAL ROUTE for development purposes
 router.delete('/delete/:email', async (req, res) => {
   const { email } = req.params;
 

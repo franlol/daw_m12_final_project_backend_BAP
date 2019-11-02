@@ -5,7 +5,7 @@ const verifyToken = (req, res, next) => {
 
   if (!token) {
     res.status(403);
-    res.json({
+    return res.json({
       message: 'Valid token must be provided'
     });
   }
@@ -30,7 +30,7 @@ const verifyToken = (req, res, next) => {
 
   } catch (err) {
     res.status(401);
-    return res.json({
+    res.json({
       message: 'Token invalid',
     });
   }
