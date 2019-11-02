@@ -3,6 +3,13 @@ const jwt = require('jsonwebtoken');
 const verifyToken = (req, res, next) => {
   const token = req.headers['access-token'];
 
+  if (!token) {
+    res.status(403);
+    return res.json({
+      message: 'Valid token must be provided'
+    });
+  }
+
   try {
     const decrypted = jwt.verify(token, process.env.TOKEN_KEY);
 
@@ -17,15 +24,16 @@ const verifyToken = (req, res, next) => {
       });
     }
 
-    res.user = decrypted;
+    req.session.user = decrypted;
+
+    next();
 
   } catch (err) {
     res.status(401);
-    return res.json({
+    res.json({
       message: 'Token invalid',
     });
   }
-  next();
 }
 
 module.exports = verifyToken;

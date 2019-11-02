@@ -7,6 +7,7 @@ const dbConnection = async () => {
       useUnifiedTopology: true,
       useNewUrlParser: true,
       useCreateIndex: true,
+      useFindAndModify: false
     });
     await createTestingUser();
   } catch (error) {

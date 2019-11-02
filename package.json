@@ -18,16 +18,10 @@
     "dotenv": "^8.2.0",
     "email-regex": "^4.0.0",
     "express": "^4.17.1",
-    "jest": "^24.9.0",
+    "express-session": "^1.17.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.7.5",
-    "nodemon": "^1.19.4",
-    "supertest": "^4.0.2"
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "coveragePathIgnorePatterns": [
-      "/node_modules/"
-    ]
+    "morgan": "^1.9.1",
+    "nodemon": "^1.19.4"
   }
 }

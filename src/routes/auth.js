@@ -36,17 +36,19 @@ router.post('/signup', checkUserFields, verifyUserFields, async (req, res, next)
       email,
       password: hashedPassword,
       cp,
-      location: [12, 12]
+      location: [12, 12] // TODO CALC
     }
 
     const createdUser = await User.create(newUser);
     const leanUser = await User.findOne({ _id: createdUser._id }).lean();
-
+    // TODO select -password
     delete leanUser.password;
 
     const token = jwt.sign(leanUser, process.env.TOKEN_KEY, {
       expiresIn: '24h'
     });
+
+    req.session.user = leanUser;
 
     res.status(200);
     res.json({
@@ -88,6 +90,8 @@ router.post('/login', checkLoginFields, async (req, res, next) => {
       expiresIn: '24h'
     });
 
+    req.session.user = user;
+
     res.status(200);
     res.json({
       auth: true,
@@ -99,26 +103,22 @@ router.post('/login', checkLoginFields, async (req, res, next) => {
   }
 });
 
-router.get('/profile', verifyToken, (req, res) => {
-  res.json({ 'user': res.user });
-});
-
-// TEMPORAL ROUTE to development purposes
-router.delete('/delete/:username', async (req, res) => {
-  const { username } = req.params;
+// TEMPORAL ROUTE for development purposes
+router.delete('/delete/:email', async (req, res) => {
+  const { email } = req.params;
 
   try {
-    await User.deleteOne({ username });
+    await User.deleteOne({ email });
 
     res.status(200);
     res.json({
       auth: true,
-      message: `${username} deleted.`
+      message: `${email} deleted.`
     });
   } catch (error) {
     res.status(500);
     return res.json({
-      message: `Error trying to delete user ${username}.`
+      message: `Error trying to delete user ${email}.`
     });
   }
 });

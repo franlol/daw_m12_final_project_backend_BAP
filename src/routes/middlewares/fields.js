@@ -46,6 +46,7 @@ const verifyUserFields = (req, res, next) => {
             message: 'Invalid password'
         });
     }
+    
     next();
 }
 

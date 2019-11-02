@@ -2,6 +2,8 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const morgan = require('morgan');
+const session = require('express-session');
 
 // Own modules
 const routes = require('./routes');
@@ -12,13 +14,15 @@ const app = express();
 // Middlewares
 app.use(cors());
 app.use(express.json());
+app.use(session({ secret: 's3cr37' }));
+app.use(morgan('dev'));
 dotenv.config();
 app.use(routes);
 
 // TODO extract 4xx and 5xx middlewares
 app.use((req, res) => {
   res.status(404);
-  res.json({
+  res.send({
     message: 'URL Not found'
   });
 });
