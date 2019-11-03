@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+
+dotenv.config();
 const createTestingUser = require('../test/moked');
 
 const dbConnection = async () => {

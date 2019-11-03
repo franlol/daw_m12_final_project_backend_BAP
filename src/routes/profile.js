@@ -51,7 +51,7 @@ router.post('/', verifyToken, checkUserFields, verifyUserFields, async (req, res
   }
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', verifyToken, async (req, res, next) => {
   const { id } = req.params;
 
   try {
