@@ -103,6 +103,17 @@ router.post('/login', checkLoginFields, async (req, res, next) => {
   }
 });
 
+router.post('/logout', verifyToken, (req, res) => {
+  delete req.session.user;
+
+  res.status(200);
+  res.json({
+    auth: false,
+    message: 'Logged out'
+  });
+
+});
+
 // TEMPORAL ROUTE for development purposes
 router.delete('/delete/:email', async (req, res) => {
   const { email } = req.params;
