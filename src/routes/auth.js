@@ -54,7 +54,7 @@ router.post('/signup', checkUserFields, verifyUserFields, async (req, res, next)
     res.json({
       auth: true,
       message: 'User created',
-      token
+      token: `Bearer ${token}`
     });
 
   } catch (err) {

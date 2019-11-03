@@ -42,7 +42,7 @@ router.post('/', verifyToken, checkUserFields, verifyUserFields, async (req, res
     res.status(200);
     res.json({
       message: `User updated`,
-      token,
+      token: `Bearer ${token}`,
       updatedUser: req.session.user
     });
 

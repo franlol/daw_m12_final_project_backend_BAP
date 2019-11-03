@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 // old token Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGJjNTc2NjMzNGQ0Zjg0OTQyYzIzMTAiLCJ1c2VybmFtZSI6InRlc3R1c2VyIiwibmFtZSI6IlVzZXIgZm9yIEplc3QgdGVzdHNhMWFzZCIsInN1cm5hbWUiOiJ0ZXN0IiwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwiY3AiOiIwMDAwMCIsImNyZWF0ZWRBdCI6IjIwMTktMTEtMDFUMTY6MDM6NTAuMjAzWiIsInVwZGF0ZWRBdCI6IjIwMTktMTEtMDJUMTE6MTQ6NTUuNDkyWiIsIl9fdiI6MCwiaWF0IjoxNTcyNjk4MDU2LCJleHAiOjE1NzI3ODQ0NTZ9.ddcieN387wXFmbDdHMyK-VB13IUK-j7j7SYBc4ZRbng
 
 const verifyToken = (req, res, next) => {
-  const token = req.headers['access-token'].split(" ")[1];
+  const token = req.headers['access-token'] ? req.headers['access-token'].split(" ")[1] : null;
 
   if (!token) {
     res.status(403);
