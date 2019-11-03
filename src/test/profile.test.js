@@ -5,6 +5,7 @@ dotenv.config();
 const app = require('../app');
 const dbConnection = require('../database')
 const data = require('./config');
+const { deleteUserUpdatedTest } = require('./moked');
 
 describe('/PROFILE testing', () => {
   let db;
@@ -28,6 +29,7 @@ describe('/PROFILE testing', () => {
   });
 
   afterAll(async () => {
+    await deleteUserUpdatedTest();
     await dbConnection.close();
     dbConnection.disconnect();
     await db.close();
@@ -62,7 +64,7 @@ describe('/PROFILE testing', () => {
       .get('/profile')
       .set({ ['access-token']: `Baerer ${process.env.TEST_EXPIRED_TOKEN}` });
 
-    expect(res.status).toEqual(200); // TODO change to 401 (token will be expired in 1h)
+    expect(res.status).toEqual(401);
   });
 
   test('Should NOT return a user data when access /profile@get with inalid token.', async () => {
@@ -81,7 +83,7 @@ describe('/PROFILE testing', () => {
         'username': 'userUpdated',
         'name': 'updated User for Jest testsa1asd',
         'surname': 'updated test',
-        'email': 'updatedTest@test.com',
+        'email': `a${process.env.TEST_EMAIL}`,
         'password': 'm0k3Dpassword',
         'cp': '00001',
       });
@@ -93,7 +95,7 @@ describe('/PROFILE testing', () => {
     expect(res.body.updatedUser).toHaveProperty('username', 'userUpdated');
     expect(res.body.updatedUser).toHaveProperty('name', 'updated User for Jest testsa1asd');
     expect(res.body.updatedUser).toHaveProperty('surname', 'updated test');
-    expect(res.body.updatedUser).toHaveProperty('email', 'updatedTest@test.com');
+    expect(res.body.updatedUser).toHaveProperty('email', `a${process.env.TEST_EMAIL}`);
     expect(res.body.updatedUser).toHaveProperty('cp', '00001');
 
     expect(res.status).toEqual(200);
@@ -109,7 +111,7 @@ describe('/PROFILE testing', () => {
     expect(res.body.user).toHaveProperty('username', 'userUpdated');
     expect(res.body.user).toHaveProperty('name', 'updated User for Jest testsa1asd');
     expect(res.body.user).toHaveProperty('surname', 'updated test');
-    expect(res.body.user).toHaveProperty('email', 'updatedTest@test.com');
+    expect(res.body.user).toHaveProperty('email', `a${process.env.TEST_EMAIL}`);
     expect(res.body.user).toHaveProperty('cp', '00001');
 
     expect(res.status).toEqual(200);

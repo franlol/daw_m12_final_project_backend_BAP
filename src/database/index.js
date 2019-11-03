@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
 dotenv.config();
-const createTestingUser = require('../test/moked');
+const { createUserTest } = require('../test/moked');
 
 const dbConnection = async () => {
   try {
@@ -12,7 +12,7 @@ const dbConnection = async () => {
       useCreateIndex: true,
       useFindAndModify: false
     });
-    await createTestingUser();
+    await createUserTest();
   } catch (error) {
     console.log('DB Error: ', error);
   }

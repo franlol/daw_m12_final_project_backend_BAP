@@ -26,4 +26,14 @@ const createUserTest = async () => {
   if (signupUser) await User.deleteOne(signupUser);
 }
 
-module.exports = createUserTest;
+const deleteUserTest = async () => {
+  const user = await User.findOne({ email: `${process.env.TEST_EMAIL}` });
+  if (user) await User.deleteOne({ email: user.email });
+}
+
+const deleteUserUpdatedTest = async () => {
+  const updatedUser = await User.findOne({ email: `a${process.env.TEST_EMAIL}` });
+  if (updatedUser) await User.deleteOne({ email: updatedUser.email });
+}
+
+module.exports = { createUserTest, deleteUserTest, deleteUserUpdatedTest };

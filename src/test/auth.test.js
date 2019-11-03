@@ -5,6 +5,7 @@ dotenv.config();
 const app = require('../app');
 const dbConnection = require('../database')
 const data = require('./config');
+const { deleteUserUpdatedTest } = require('./moked');
 
 describe('/LOGIN testing', () => {
   let db;
@@ -14,6 +15,7 @@ describe('/LOGIN testing', () => {
   });
 
   afterAll(async () => {
+    await deleteUserUpdatedTest();
     await dbConnection.close();
     dbConnection.disconnect();
     await db.close();
@@ -77,6 +79,7 @@ describe('/SIGNUP testing', () => {
   });
 
   afterAll(async () => {
+    await deleteUserUpdatedTest();
     await dbConnection.close();
     dbConnection.disconnect();
     await db.close();
@@ -89,7 +92,7 @@ describe('/SIGNUP testing', () => {
         username: 'testuser',
         name: 'User for Jest tests',
         surname: 'test',
-        email: `${process.env.TEST_EMAIL}a`,
+        email: `a${process.env.TEST_EMAIL}`,
         password: 'asd',
         cp: '00000',
         location: [0, 0]
@@ -106,7 +109,7 @@ describe('/SIGNUP testing', () => {
         username: 'usern4me!',
         name: 'User for Jest tests',
         surname: 'test',
-        email: `${process.env.TEST_EMAIL}a`,
+        email: `a${process.env.TEST_EMAIL}`,
         password: 'asd',
         cp: '00000',
         location: [0, 0]
@@ -123,7 +126,7 @@ describe('/SIGNUP testing', () => {
         username: 'testuser',
         name: 'User for Jest tests',
         surname: 'test',
-        email: `${process.env.TEST_EMAIL}a`,
+        email: `a${process.env.TEST_EMAIL}`,
         password: process.env.TEST_PASSWORD,
         cp: '00000',
         location: [0, 0]
@@ -141,7 +144,7 @@ describe('/SIGNUP testing', () => {
         username: 'testuser',
         name: 'User for Jest tests',
         surname: 'test',
-        email: `${process.env.TEST_EMAIL}a`,
+        email: `a${process.env.TEST_EMAIL}`,
         password: process.env.TEST_PASSWORD,
         cp: '00000',
         location: [0, 0]
