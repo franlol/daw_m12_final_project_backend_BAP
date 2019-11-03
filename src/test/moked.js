@@ -1,5 +1,7 @@
 const User = require('../database/models/User');
 const bcrypt = require('bcrypt');
+const dotenv = require('dotenv');
+dotenv.config({ path: __dirname + '/.env' });
 
 const createUserTest = async () => {
   const testUser = await User.findOne({ email: process.env.TEST_EMAIL });

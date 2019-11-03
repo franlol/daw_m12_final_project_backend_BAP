@@ -1,10 +1,10 @@
 const request = require('supertest');
 const dotenv = require('dotenv');
+dotenv.config();
 
 const app = require('../app');
 const dbConnection = require('../database')
 const data = require('./config');
-dotenv.config();
 
 describe('/LOGIN testing', () => {
   let db;
