@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
 dotenv.config();
-const { createUserTest } = require('../test/moked');
+const { createUserTest, deleteUserTest, deleteUserUpdatedTest } = require('../test/moked');
 
 const dbConnection = async () => {
   try {
@@ -13,6 +13,7 @@ const dbConnection = async () => {
       useFindAndModify: false
     });
     await createUserTest();
+    await deleteUserUpdatedTest();
   } catch (error) {
     console.log('DB Error: ', error);
   }

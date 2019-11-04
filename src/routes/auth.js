@@ -15,7 +15,7 @@ router.post('/signup', checkUserFields, verifyUserFields, async (req, res, next)
 
   try {
     const location = await z1p(["ES"]).raw(v => v.zip_code == cp)[0];
-    if (location.length === 0) {
+    if (!location || location.length === 0) {
       res.status(422);
       return res.json({
         auth: false,

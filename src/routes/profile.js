@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
+const z1p = require("z1p");
 
 const User = require('../database/models/User');
 
@@ -22,14 +23,25 @@ router.get('/', verifyToken, (req, res) => {
   res.json(user);
 });
 
+// TODO update user post should not expect a password (also fix tests)
 router.post('/', verifyToken, checkUserFields, verifyUserFields, async (req, res, next) => {
   try {
     delete req.body.password;
     await User.findOneAndUpdate({ _id: req.session.user._id }, { ...req.body }).select("-password");
 
+    const { cp } = req.body;
+    const location = await z1p(["ES"]).raw(v => v.zip_code == cp)[0];
+    if (!location || location.length === 0) {
+      res.status(422);
+      return res.json({
+        auth: false,
+        message: 'Invalid spanish zipcode'
+      });
+    }
     const updated = {
       ...req.session.user,
-      ...req.body
+      ...req.body,
+      location
     }
 
     delete updated.exp;
