@@ -64,7 +64,6 @@ describe('/LOGIN testing', () => {
         email: data.user.email,
         password: data.user.password
       });
-
     expect(res.status).toEqual(200);
     expect(res.body.auth).toBe(true);
     expect(res.body).toHaveProperty('token');

@@ -16,8 +16,17 @@ const createUserTest = async () => {
       surname: 'test',
       email: process.env.TEST_EMAIL,
       password: hashedPassword,
-      cp: '00000',
-      location: [0, 0]
+      cp: '08730',
+      location: {
+        type: 'Point',
+        coordinates: [41.3324, 1.6496],
+        place: 'Santa Margarida I Els Monjos',
+        country_code: 'ES',
+        state_code: 'CT',
+        state: 'Cataluna',
+        province: 'Barcelona',
+        place: 'Santa Margarida I Els Monjos'
+      }
     }
     await User.create(mokedUser);
   }

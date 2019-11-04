@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const z1p = require("z1p");
 
 const User = require('../database/models/User');
 
@@ -12,12 +13,17 @@ const router = express.Router();
 router.post('/signup', checkUserFields, verifyUserFields, async (req, res, next) => {
   const { username, name, surname, email, password, cp } = req.body;
 
-  // TODO validate CP
-  // TODO Create location from CP
-
   try {
-    const user = await User.findOne({ email });
+    const location = await z1p(["ES"]).raw(v => v.zip_code == cp)[0];
+    if (location.length === 0) {
+      res.status(422);
+      return res.json({
+        auth: false,
+        message: 'Invalid spanish zipcode'
+      });
+    }
 
+    const user = await User.findOne({ email });
     if (user) {
       res.status(409);
       return res.json({
@@ -36,7 +42,16 @@ router.post('/signup', checkUserFields, verifyUserFields, async (req, res, next)
       email,
       password: hashedPassword,
       cp,
-      location: [12, 12] // TODO CALC
+      location: {
+        type: 'Point',
+        coordinates: [location.latitude, location.longitude],
+        place: location.place,
+        country_code: location.country_code,
+        state_code: location.state_code,
+        state: location.state,
+        province: location.province,
+        place: location.place
+      }
     }
 
     const createdUser = await User.create(newUser);
@@ -111,7 +126,6 @@ router.post('/logout', verifyToken, (req, res) => {
     auth: false,
     message: 'Logged out'
   });
-
 });
 
 // TEMPORAL ROUTE for development purposes

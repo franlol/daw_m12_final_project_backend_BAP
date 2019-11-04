@@ -24,10 +24,67 @@ const userSchema = new Schema({
     type: String,
     required: true
   },
-  location: {
-    type: { type: String },
-    coordinates: [Number]
+  location: {// lat long
+    type: {
+      type: String,
+      default: 'Point'
+    },
+    coordinates: [Number],
+    place: {
+      type: String,
+      required: true,
+    },
+    country_code: {
+      type: String,
+      required: true,
+    },
+    state_code: {
+      type: String,
+      required: true,
+    },
+    state: {
+      type: String,
+      required: true,
+    },
+    province: {
+      type: String,
+      required: true,
+    },
+    place: {
+      type: String,
+      required: true,
+    }
   },
+  // location: {
+  //   coordinates: {
+  //     type: [Number],
+  //     required: true
+  //   },
+  //   place: {
+  //     type: String,
+  //     required: true
+  //   },
+  //   country_code: {
+  //     type: String,
+  //     required: true
+  //   },
+  //   state_code: {
+  //     type: String,
+  //     required: true
+  //   },
+  //   state: {
+  //     type: String,
+  //     required: true
+  //   },
+  //   province: {
+  //     type: String,
+  //     required: true
+  //   },
+  //   place: {
+  //     type: String,
+  //     required: true
+  //   }
+  // },
   cp: {
     type: String,
     required: true
