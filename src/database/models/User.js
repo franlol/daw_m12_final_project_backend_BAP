@@ -55,36 +55,6 @@ const userSchema = new Schema({
       required: true,
     }
   },
-  // location: {
-  //   coordinates: {
-  //     type: [Number],
-  //     required: true
-  //   },
-  //   place: {
-  //     type: String,
-  //     required: true
-  //   },
-  //   country_code: {
-  //     type: String,
-  //     required: true
-  //   },
-  //   state_code: {
-  //     type: String,
-  //     required: true
-  //   },
-  //   state: {
-  //     type: String,
-  //     required: true
-  //   },
-  //   province: {
-  //     type: String,
-  //     required: true
-  //   },
-  //   place: {
-  //     type: String,
-  //     required: true
-  //   }
-  // },
   cp: {
     type: String,
     required: true
