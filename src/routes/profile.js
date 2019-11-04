@@ -7,7 +7,7 @@ const z1p = require("z1p");
 const User = require('../database/models/User');
 
 const verifyToken = require('./middlewares/auth');
-const { checkUserFields, verifyUserFields } = require('./middlewares/fields');
+const { updateProfileUserFields, updateProfileVerifyUserFields } = require('./middlewares/fields');
 
 router.get('/', verifyToken, (req, res) => {
   const { user } = req.session;
@@ -24,7 +24,7 @@ router.get('/', verifyToken, (req, res) => {
 });
 
 // TODO update user post should not expect a password (also fix tests)
-router.post('/', verifyToken, checkUserFields, verifyUserFields, async (req, res, next) => {
+router.post('/', verifyToken, updateProfileUserFields, updateProfileVerifyUserFields, async (req, res, next) => {
   try {
     delete req.body.password;
     await User.findOneAndUpdate({ _id: req.session.user._id }, { ...req.body }).select("-password");

@@ -57,7 +57,6 @@ const updateTestingUser = async () => {
       'name': 'updated User for Jest testsa1asd',
       'surname': 'updated test',
       'email': `a${process.env.TEST_EMAIL}`,
-      'password': 'm0k3Dpassword', // TODO user update should not require a password
       'cp': '08730',
     });
 
@@ -99,7 +98,6 @@ const updateTestingUserWithInvalidZipcode = async () => {
       'name': 'updated User for Jest testsa1asd',
       'surname': 'updated test',
       'email': `a${process.env.TEST_EMAIL}`,
-      'password': 'm0k3Dpassword', // TODO user update should not require a password
       'cp': '99999',
     });
 
