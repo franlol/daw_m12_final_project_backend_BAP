@@ -23,33 +23,34 @@ describe('BAP TESTS', () => {
   });
 
   // API testing
-  test('API Runs and give a response.', apiTests.apiIsRunning);
+  it('Should run the API and give a response.', apiTests.apiIsRunning);
 
-  // Auth
-  // Login Testing
-  test('Should not login a unexistent username.', authTests.loginUnexistentUserame);
-  test('Should not login with invalid credentials.', authTests.loginWithIncorrectCredentials);
-  test('Should not login with empty fields.', authTests.loginWithEmptyFields);
-  test('Should login a moked user.', authTests.loginMokedUser);
-  // Signup Testing
-  test('Should not signup a new user with invalid password.', authTests.signupWithInvalidPassword);
-  test('Should not signup a new user with invalid username.', authTests.signupWithInvalidUsername);
-  test('Should not signup a new user with inalid zipcode', authTests.signupWithInvalidZipcode);
-  test('Should not sign up a existing user.', authTests.signupExistingUser);
-  test('Should not sign up with empty fields.', authTests.signupWithEmptyFields);
-  test('Should signup a new user', authTests.signUpNewUser);
+  // Auth Testing
+  // Login
+  it('Should not login a unexistent username.', authTests.loginUnexistentUserame);
+  it('Should not login with invalid credentials.', authTests.loginWithIncorrectCredentials);
+  it('Should not login with empty fields.', authTests.loginWithEmptyFields);
+  it('Should login a moked user.', authTests.loginMokedUser);
+  // Signup
+  it('Should not signup a new user with invalid password.', authTests.signupWithInvalidPassword);
+  it('Should not sign up a existing user.', authTests.signupExistingUser);
+  it('Should not sign up with empty fields.', authTests.signupWithEmptyFields);
+  it('Should signup a new user', authTests.signUpNewUser);
+  // Logout
+  it('Should logout a user with valid token', authTests.logoutUserWithValidToken);
+  it('Should not logout a user with invalid token', authTests.logoutUserWithInvalidToken);
 
   // Profile Testing
   // Get /profile
-  test('Should return a full user object when access /profile@get with valid token.', profileTests.getOwnProfileWithValidToken);
-  test('Should not return a user data when access /profile@get without token.', profileTests.getOwnProfileWithoutToken);
-  test('Should not return a user data when access /profile@get with expired token.', profileTests.getOwnProfileWithExpiredToken);
-  test('Should not return a user data when access /profile@get with invalid token.', profileTests.getOwnProfileWithInvalidToken);
+  it('Should return a full user object when access /profile@get with valid token.', profileTests.getOwnProfileWithValidToken);
+  it('Should not return a user data when access /profile@get without token.', profileTests.getOwnProfileWithoutToken);
+  it('Should not return a user data when access /profile@get with expired token.', profileTests.getOwnProfileWithExpiredToken);
+  it('Should not return a user data when access /profile@get with invalid token.', profileTests.getOwnProfileWithInvalidToken);
   // Post /profile
-  test('Should update testing user.', profileTests.updateTestingUser);
-  test('Should not update testing user with invalid zipcode.', profileTests.updateTestingUserWithInvalidZipcode);
+  it('Should update testing user.', profileTests.updateTestingUser);
+  it('Should not update testing user with invalid zipcode.', profileTests.updateTestingUserWithInvalidZipcode);
   // Get /profile/:id
-  test('Should return user information when accessing /profile/:id with valid token.', profileTests.getProfileByIdWithValidToken);
-  test('Should not return user information when accessing /profile/:id with invalid token.', profileTests.getProfileByIdWithInvalidToken);
-  test('Should not return user information when accessing /profile/:id with invalid ID.', profileTests.getProfileWithInvalidId);
+  it('Should return user information when accessing /profile/:id with valid token.', profileTests.getProfileByIdWithValidToken);
+  it('Should not return user information when accessing /profile/:id with invalid token.', profileTests.getProfileByIdWithInvalidToken);
+  it('Should not return user information when accessing /profile/:id with invalid ID.', profileTests.getProfileWithInvalidId);
 });

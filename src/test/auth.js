@@ -4,6 +4,7 @@ dotenv.config();
 
 const app = require('../app');
 const data = require('./config');
+const { getToken } = require('./utils.js');
 
 // LOGIN
 const loginUnexistentUserame = async () => {
@@ -154,6 +155,28 @@ const signUpNewUser = async () => {
   expect(res.body).toHaveProperty('token');
 }
 
+const logoutUserWithValidToken = async () => {
+  const token = await getToken(data.user.email, data.user.password);
+
+  const res = await request(app)
+    .post('/auth/logout')
+    .set({ ['access-token']: `Baerer ${token}` });
+
+    expect(res.body.auth).toBe(false);
+    expect(res.body.message).toEqual('Logged out');
+    expect(res.status).toEqual(200);
+}
+
+const logoutUserWithInvalidToken = async () => {
+  const token = await getToken(data.user.email, data.user.password);
+
+  const res = await request(app)
+    .post('/auth/logout')
+    .set({ ['access-token']: `Baerer a${token}` });
+
+    expect(res.status).toEqual(401);
+}
+
 module.exports = {
   loginUnexistentUserame,
   loginWithIncorrectCredentials,
@@ -165,5 +188,8 @@ module.exports = {
   signupWithInvalidZipcode,
   signupExistingUser,
   signupWithEmptyFields,
-  signUpNewUser
+  signUpNewUser,
+  
+  logoutUserWithValidToken,
+  logoutUserWithInvalidToken
 }

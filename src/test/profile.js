@@ -4,25 +4,7 @@ dotenv.config();
 
 const app = require('../app');
 const data = require('./config');
-
-const getToken = async (email, password) => {
-  const res = await request(app)
-    .post('/auth/login')
-    .send({
-      email,
-      password
-    });
-
-  return res.body.token.split(" ")[1];
-}
-
-getUser = async token => {
-  const res = await request(app)
-    .get('/profile')
-    .set({ ['access-token']: `Baerer ${token}` });
-
-  return res.body;
-}
+const { getToken, getUser } = require('./utils.js');
 
 const getOwnProfileWithValidToken = async () => {
   const token = await getToken(data.user.email, data.user.password);
@@ -89,7 +71,7 @@ const updateTestingUser = async () => {
   expect(res.body.updatedUser).toHaveProperty('email', `a${process.env.TEST_EMAIL}`);
   expect(res.body.updatedUser).toHaveProperty('cp', '08730');
   expect(res.body.updatedUser).toHaveProperty('location');
-  
+
   expect(res.body.updatedUser.location).toHaveProperty('accuracy');
   expect(res.body.updatedUser.location).toHaveProperty('community');
   expect(res.body.updatedUser.location).toHaveProperty('community_code');
