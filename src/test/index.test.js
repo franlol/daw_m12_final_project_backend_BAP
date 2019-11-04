@@ -1,4 +1,3 @@
-const request = require('supertest');
 const dotenv = require('dotenv');
 
 const apiTests = require('./api');
@@ -23,7 +22,7 @@ describe('BAP TESTS', () => {
     await db.close();
   });
 
-  // API test
+  // API testing
   test('API Runs and give a response.', apiTests.apiIsRunning);
 
   // Auth
