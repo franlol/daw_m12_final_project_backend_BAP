@@ -49,13 +49,13 @@ describe('BAP TESTS', () => {
 
   describe('# PROFILE Testing', () => {
     describe('- /Profile @ GET', () => {
-      it('- Should return a full user object when access /profile@get with valid token.', profileTests.getOwnProfileWithValidToken);
-      it('- Should not return a user data when access /profile@get without token.', profileTests.getOwnProfileWithoutToken);
-      it('- Should not return a user data when access /profile@get with expired token.', profileTests.getOwnProfileWithExpiredToken);
-      it('- Should not return a user data when access /profile@get with invalid token.', profileTests.getOwnProfileWithInvalidToken);
+      it('- Should return a full user object when access with valid token.', profileTests.getOwnProfileWithValidToken);
+      it('- Should not return a user data when access without token.', profileTests.getOwnProfileWithoutToken);
+      it('- Should not return a user data when access with expired token.', profileTests.getOwnProfileWithExpiredToken);
+      it('- Should not return a user data when access with invalid token.', profileTests.getOwnProfileWithInvalidToken);
     });
 
-    describe('- /Profile @ POST', () => {
+    describe('- /Profile @ PUT', () => {
       it('- Should update testing user.', profileTests.updateTestingUser);
       it('- Should not update testing user with invalid zipcode.', profileTests.updateTestingUserWithInvalidZipcode);
     });

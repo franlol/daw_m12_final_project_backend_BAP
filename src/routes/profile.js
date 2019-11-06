@@ -23,8 +23,7 @@ router.get('/', verifyToken, (req, res) => {
   res.json(user);
 });
 
-// TODO update user post should not expect a password (also fix tests)
-router.post('/', verifyToken, updateProfileUserFields, updateProfileVerifyUserFields, async (req, res, next) => {
+router.put('/', verifyToken, updateProfileUserFields, updateProfileVerifyUserFields, async (req, res, next) => {
   try {
     delete req.body.password;
     await User.findOneAndUpdate({ _id: req.session.user._id }, { ...req.body }).select("-password");
@@ -74,7 +73,6 @@ router.get('/:id', verifyToken, async (req, res, next) => {
       });
     }
 
-    // 5c790021e26c13412e8d7f9a
     const user = await User.findById(id).select("-password");
 
     if (!user) {

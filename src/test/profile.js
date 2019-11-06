@@ -50,7 +50,7 @@ const updateTestingUser = async () => {
   const token = await getToken(data.user.email, data.user.password);
 
   const res = await request(app)
-    .post('/profile')
+    .put('/profile')
     .set({ ['access-token']: `Baerer ${token}` })
     .send({
       'username': 'userUpdated',
@@ -91,7 +91,7 @@ const updateTestingUserWithInvalidZipcode = async () => {
   const token = await getToken(`a${data.user.email}`, data.user.password);
 
   const res = await request(app)
-    .post('/profile')
+    .put('/profile')
     .set({ ['access-token']: `Baerer ${token}` })
     .send({
       'username': 'userUpdated',
