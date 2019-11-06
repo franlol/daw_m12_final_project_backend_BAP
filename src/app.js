@@ -14,7 +14,7 @@ const app = express();
 // Middlewares
 app.use(cors());
 app.use(express.json());
-app.use(session({ secret: 's3cr37' })); // TODO generate new key, and put in envs
+app.use(session({ secret: 's3cr37', saveUninitialized: true, resave: true })); // TODO generate new key, and put in envs
 // app.use(morgan('dev'));
 dotenv.config({ path: __dirname + '/.env' });
 app.use(routes);
