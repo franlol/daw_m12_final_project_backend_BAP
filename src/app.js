@@ -2,7 +2,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const morgan = require('morgan');
 const session = require('express-session');
 
 // Own modules
@@ -15,7 +14,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(session({ secret: 's3cr37', saveUninitialized: true, resave: true })); // TODO generate new key, and put in envs
-// app.use(morgan('dev'));
 dotenv.config({ path: __dirname + '/.env' });
 app.use(routes);
 

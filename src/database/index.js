@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
 dotenv.config();
-const { createUserTest, deleteUserTest, deleteUserUpdatedTest } = require('../test/moked');
+const { createUserTest, deleteUserUpdatedTest } = require('../test/moked');
 
 const dbConnection = async () => {
   try {
