@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
 
@@ -8,7 +8,7 @@ const anunciSchema = new Schema(
   {
     owner: {
       type: ObjectId,
-      ref: "User"
+      ref: 'User'
     },
     title: String,
     description: String,
@@ -26,6 +26,6 @@ const anunciSchema = new Schema(
   }
 );
 
-const Anunci = mongoose.model("Anunci", anunciSchema);
+const Anunci = mongoose.model('Anunci', anunciSchema);
 
 module.exports = Anunci;
