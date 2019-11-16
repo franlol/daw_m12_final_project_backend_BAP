@@ -1,10 +1,10 @@
 const express = require('express');
-const mongoose = require('mongoose');
+const Anunci = require('../database/models/Anunci');
+const verifyToken = require('./middlewares/auth');
+
 const router = express.Router();
 
-const Anunci = require('../database/models/Anunci');
-
-router.post('/', (req, res, next) => {
+router.post('/', verifyToken, (req, res, next) => {
   if (!req.session.user) {
     res.status(400);
     return res.json({
@@ -36,3 +36,5 @@ router.post('/', (req, res, next) => {
     })
     .catch(err => res.status(500).json(err));
 });
+
+module.exports = router;

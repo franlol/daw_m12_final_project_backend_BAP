@@ -15,7 +15,8 @@ const citaSchema = new Schema(
       required: true
     },
     userSubscribedId: {
-      type: String,
+      type: ObjectId,
+      ref: 'User',
       required: true
     },
     discount: Boolean
