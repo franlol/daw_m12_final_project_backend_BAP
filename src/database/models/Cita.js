@@ -13,7 +13,12 @@ const citaSchema = new Schema(
     date: {
       type: Date,
       required: true
-    }
+    },
+    userSubscribedId: {
+      type: String,
+      required: true
+    },
+    discount: Boolean
   },
   {
     timestamps: true
