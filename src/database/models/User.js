@@ -3,66 +3,69 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const userSchema = new Schema({
-  username: {
-    type: String,
-    required: true
-  },
-  name: {
-    type: String,
-    required: true
-  },
-  surname: {
-    type: String,
-    required: true
-  },
-  email: {
-    type: String,
-    required: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  location: {// lat long
-    type: {
+const userSchema = new Schema(
+  {
+    username: {
       type: String,
-      default: 'Point'
+      required: true
     },
-    coordinates: [Number],
-    place: {
+    name: {
       type: String,
-      required: true,
+      required: true
     },
-    country_code: {
+    surname: {
       type: String,
-      required: true,
+      required: true
     },
-    state_code: {
+    email: {
       type: String,
-      required: true,
+      required: true
     },
-    state: {
+    password: {
       type: String,
-      required: true,
+      required: true
     },
-    province: {
-      type: String,
-      required: true,
+    location: {
+      // lat long
+      type: {
+        type: String,
+        default: 'Point'
+      },
+      coordinates: [Number],
+      place: {
+        type: String,
+        required: true
+      },
+      country_code: {
+        type: String,
+        required: true
+      },
+      state_code: {
+        type: String,
+        required: true
+      },
+      state: {
+        type: String,
+        required: true
+      },
+      province: {
+        type: String,
+        required: true
+      },
+      place: {
+        type: String,
+        required: true
+      }
     },
-    place: {
+    cp: {
       type: String,
-      required: true,
+      required: true
     }
   },
-  cp: {
-    type: String,
-    required: true
-  }
-},
   {
     timestamps: true
-  });
+  }
+);
 
 userSchema.index({ location: '2dsphere' });
 const User = mongoose.model('User', userSchema);

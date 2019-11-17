@@ -10,8 +10,16 @@ const anunciSchema = new Schema(
       type: ObjectId,
       ref: 'User'
     },
-    descripcio: String,
-    rang: Number
+    title: String,
+    description: String,
+    rang: Number,
+    services: {
+      cangur: Boolean,
+      classes: Boolean,
+      neteja: Boolean,
+      mascotes: Boolean
+    },
+    price: Number
   },
   {
     timestamps: true
