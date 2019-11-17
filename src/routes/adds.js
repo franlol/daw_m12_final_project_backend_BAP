@@ -1,5 +1,5 @@
 const express = require('express');
-const Anunci = require('../database/models/Anunci');
+const Add = require('../database/models/Add');
 const verifyToken = require('./middlewares/auth');
 
 const router = express.Router();
@@ -14,25 +14,25 @@ router.post('/', verifyToken, (req, res, next) => {
 
   const title = req.body.title;
   const description = req.body.description;
-  const rang = req.body.rang;
+  const range = req.body.range;
   const services = req.body.services;
   const price = req.body.price;
 
   const owner = req.session.user._id;
 
-  const anunci = new Anunci({
+  const add = new Add({
     owner,
     title,
     description,
-    rang,
+    range,
     services,
     price
   });
 
-  return anunci
+  return add
     .save()
     .then(rs => {
-      res.status(201).json(anunci);
+      res.status(201).json(add);
     })
     .catch(err => res.status(500).json(err));
 });
