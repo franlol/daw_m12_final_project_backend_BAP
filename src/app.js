@@ -2,7 +2,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const morgan = require('morgan');
 const session = require('express-session');
 
 // Own modules
@@ -30,6 +29,7 @@ app.use((req, res) => {
 app.use((err, req, res) => {
   res.status(500);
   res.json({
+    code: 1,
     message: 'Server internal error'
   });
 });

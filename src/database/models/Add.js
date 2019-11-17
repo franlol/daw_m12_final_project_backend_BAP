@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
 
-const anunciSchema = new Schema(
+const addSchema = new Schema(
   {
     owner: {
       type: ObjectId,
@@ -12,12 +12,12 @@ const anunciSchema = new Schema(
     },
     title: String,
     description: String,
-    rang: Number,
+    range: Number,
     services: {
-      cangur: Boolean,
+      babysitter: Boolean,
       classes: Boolean,
-      neteja: Boolean,
-      mascotes: Boolean
+      cleaner: Boolean,
+      pets: Boolean
     },
     price: Number
   },
@@ -26,6 +26,6 @@ const anunciSchema = new Schema(
   }
 );
 
-const Anunci = mongoose.model('Anunci', anunciSchema);
+const Add = mongoose.model('Add', addSchema);
 
-module.exports = Anunci;
+module.exports = Add;
