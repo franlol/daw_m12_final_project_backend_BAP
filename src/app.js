@@ -28,6 +28,7 @@ app.use((req, res) => {
 app.use((err, req, res) => {
   res.status(500);
   res.json({
+    code: 1,
     message: 'Server internal error'
   });
 });

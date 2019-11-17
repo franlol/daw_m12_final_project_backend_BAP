@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
 
-const citaSchema = new Schema(
+const appointmentSchema = new Schema(
   {
     owner: {
       type: ObjectId,
@@ -15,7 +15,8 @@ const citaSchema = new Schema(
       required: true
     },
     userSubscribedId: {
-      type: String,
+      type: ObjectId,
+      ref: 'User',
       required: true
     },
     discount: Boolean
@@ -25,6 +26,6 @@ const citaSchema = new Schema(
   }
 );
 
-const Cita = mongoose.model('Cita', citaSchema);
+const Appointment = mongoose.model('Appointment', appointmentSchema);
 
-module.exports = Cita;
+module.exports = Appointment;
