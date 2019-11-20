@@ -45,6 +45,32 @@ router.post('/', verifyToken, (req, res, next) => {
     .catch(err => res.status(500).json(err));
 });
 
+router.get('/', verifyToken, async (req, res, next) => {
+  const { _id: id } = req.session.user;
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.status(422);
+      return res.json({
+        message: 'Invalid Ad ID'
+      });
+    }
+
+    const ad = await Add.findOne({ owner: id });
+    if (!ad) {
+      res.status(404);
+      return res.json({
+        message: 'Ad not found.'
+      });
+    }
+
+    res.status(200);
+    return res.json({ ad });
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.delete('/:id', verifyToken, async (req, res, next) => {
   const { id } = req.params;
   const { user } = req.session;
@@ -63,7 +89,7 @@ router.delete('/:id', verifyToken, async (req, res, next) => {
       res.status(404);
       return res.json({
         message: 'Ad not found.'
-      })
+      });
     }
 
     if (!ad.owner._id.equals(user._id)) {

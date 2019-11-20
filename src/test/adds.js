@@ -56,18 +56,33 @@ const createAddWithInvalidToken = async () => {
   expect(res.body.message).toEqual('Token invalid');
 };
 
+const getAdByUser = async () => {
+  const token = await getToken(data.user.email, data.user.password);
+  const res = await request(app)
+    .get('/adds')
+    .set({ ['access-token']: `Bearer ${token}` });
+
+  expect(res.status).toEqual(200);
+  expect(res.body.ad).toHaveProperty('title', 'Test Add');
+  expect(res.body.ad).toHaveProperty('description', 'This is a test add');
+  expect(res.body.ad).toHaveProperty('range', 5);
+  expect(res.body.ad).toHaveProperty('price', 25);
+
+};
+
 const deleteAd = async (done) => {
   const token = await getToken(data.user.email, data.user.password);
   const loggedUser = await getUser(token);
 
   // Get add by user (no endpoint ATM)
   // TODO delete after find
-  
+
   return done();
 }
 
 module.exports = {
   createAdd,
   createAddWithInvalidToken,
+  getAdByUser,
   deleteAd
 };

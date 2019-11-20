@@ -72,6 +72,7 @@ describe('BAP TESTS', () => {
     describe('- /Adds @ POST', () => {
       it('- Should create a new add', addsTests.createAdd);
       it('- Should return error when token is invalid', addsTests.createAddWithInvalidToken);
+      it('- Should get the user ad', addsTests.getAdByUser);
       it('- Should delete previous ad', addsTests.deleteAd);
     });
   });
