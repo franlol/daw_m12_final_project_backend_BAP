@@ -9,7 +9,7 @@ const getToken = async (email, password) => {
       password
     });
 
-  return res.body.token.split(" ")[1];
+    return res.body.token.split(" ")[1];
 }
 
 getUser = async token => {

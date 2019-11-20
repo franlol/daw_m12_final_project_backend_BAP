@@ -59,6 +59,13 @@ router.delete('/:id', verifyToken, async (req, res, next) => {
 
     const ad = await Add.findById(id).populate('owner').lean();
 
+    if (!ad) {
+      res.status(404);
+      return res.json({
+        message: 'Ad not found.'
+      })
+    }
+
     if (!ad.owner._id.equals(user._id)) {
       res.status(401);
       return res.json({

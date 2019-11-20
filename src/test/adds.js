@@ -4,9 +4,12 @@ dotenv.config({ path: __dirname + '/.env' });
 
 const app = require('../app');
 const data = require('./config');
+
 const { getToken, getUser } = require('./utils.js');
+const { createUserTest } = require('./moked');
 
 const createAdd = async () => {
+  await createUserTest();
   const token = await getToken(data.user.email, data.user.password);
   const loggedUser = await getUser(token);
   const res = await request(app)
@@ -53,7 +56,18 @@ const createAddWithInvalidToken = async () => {
   expect(res.body.message).toEqual('Token invalid');
 };
 
+const deleteAd = async (done) => {
+  const token = await getToken(data.user.email, data.user.password);
+  const loggedUser = await getUser(token);
+
+  // Get add by user (no endpoint ATM)
+  // TODO delete after find
+  
+  return done();
+}
+
 module.exports = {
   createAdd,
-  createAddWithInvalidToken
+  createAddWithInvalidToken,
+  deleteAd
 };
