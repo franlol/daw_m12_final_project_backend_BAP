@@ -56,10 +56,12 @@ const createAddWithInvalidToken = async () => {
   expect(res.body.message).toEqual('Token invalid');
 };
 
-const getAdByUser = async () => {
+const getAdByUserId = async () => {
   const token = await getToken(data.user.email, data.user.password);
+  const loggedUser = await getUser(token);
+
   const res = await request(app)
-    .get('/adds')
+    .get(`/adds/${loggedUser._id}`)
     .set({ ['access-token']: `Bearer ${token}` });
 
   expect(res.status).toEqual(200);
@@ -83,6 +85,6 @@ const deleteAd = async (done) => {
 module.exports = {
   createAdd,
   createAddWithInvalidToken,
-  getAdByUser,
+  getAdByUserId,
   deleteAd
 };
