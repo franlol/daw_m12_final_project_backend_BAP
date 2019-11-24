@@ -111,12 +111,4 @@ router.delete('/:id', verifyToken, async (req, res, next) => {
   }
 });
 
-// router.get('/cerca', async (req, res, next) => {
-//   const anuncis = await Add.find().populate('owner').select('-password');
-//   console.log('anuncis', anuncis)
-
-//   res.status(200);
-//   return res.json(anuncis);
-// });
-
 module.exports = router;
