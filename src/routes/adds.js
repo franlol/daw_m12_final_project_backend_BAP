@@ -45,18 +45,18 @@ router.post('/', verifyToken, (req, res, next) => {
     .catch(err => res.status(500).json(err));
 });
 
-router.get('/', verifyToken, async (req, res, next) => {
-  const { _id: id } = req.session.user;
+router.get('/:userId', verifyToken, async (req, res, next) => {
+  const { userId } = req.params;
 
   try {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
       res.status(422);
       return res.json({
         message: 'Invalid Ad ID'
       });
     }
 
-    const ad = await Add.findOne({ owner: id });
+    const ad = await Add.findOne({ owner: userId });
     if (!ad) {
       res.status(404);
       return res.json({
