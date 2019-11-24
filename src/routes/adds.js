@@ -45,6 +45,32 @@ router.post('/', verifyToken, (req, res, next) => {
     .catch(err => res.status(500).json(err));
 });
 
+router.get('/:userId', verifyToken, async (req, res, next) => {
+  const { userId } = req.params;
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      res.status(422);
+      return res.json({
+        message: 'Invalid Ad ID'
+      });
+    }
+
+    const ad = await Add.findOne({ owner: userId });
+    if (!ad) {
+      res.status(404);
+      return res.json({
+        message: 'Ad not found.'
+      });
+    }
+
+    res.status(200);
+    return res.json({ ad });
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.delete('/:id', verifyToken, async (req, res, next) => {
   const { id } = req.params;
   const { user } = req.session;
@@ -63,7 +89,7 @@ router.delete('/:id', verifyToken, async (req, res, next) => {
       res.status(404);
       return res.json({
         message: 'Ad not found.'
-      })
+      });
     }
 
     if (!ad.owner._id.equals(user._id)) {
@@ -84,13 +110,5 @@ router.delete('/:id', verifyToken, async (req, res, next) => {
     next(err)
   }
 });
-
-// router.get('/cerca', async (req, res, next) => {
-//   const anuncis = await Add.find().populate('owner').select('-password');
-//   console.log('anuncis', anuncis)
-
-//   res.status(200);
-//   return res.json(anuncis);
-// });
 
 module.exports = router;
