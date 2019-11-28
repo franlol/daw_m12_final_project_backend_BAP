@@ -17,12 +17,7 @@ router.post('/', verifyToken, (req, res, next) => {
   const title = req.body.title;
   const description = req.body.description;
   const range = req.body.range;
-  const services = {
-    babysitter: true,
-    classes: true,
-    cleaner: true,
-    pets: true
-  }
+  const services = req.body.services;
 
   const price = req.body.price;
 
@@ -83,7 +78,9 @@ router.delete('/:id', verifyToken, async (req, res, next) => {
       });
     }
 
-    const ad = await Add.findById(id).populate('owner').lean();
+    const ad = await Add.findById(id)
+      .populate('owner')
+      .lean();
 
     if (!ad) {
       res.status(404);
@@ -105,9 +102,8 @@ router.delete('/:id', verifyToken, async (req, res, next) => {
     return res.json({
       message: 'Ad removed.'
     });
-
   } catch (err) {
-    next(err)
+    next(err);
   }
 });
 
