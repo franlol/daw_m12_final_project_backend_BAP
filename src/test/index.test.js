@@ -70,10 +70,21 @@ describe('BAP TESTS', () => {
 
   describe('# ADDS Testing ', () => {
     describe('- /Adds @ POST', () => {
-      it('- Should create a new add', addsTests.createAdd);
-      it('- Should return error when token is invalid', addsTests.createAddWithInvalidToken);
-      it('- Should get the user ad', addsTests.getAdByUserId);
-      it('- Should delete previous ad', addsTests.deleteAd);
+      it('- Should create a new add.', addsTests.createAdd);
+      it('- Should return error when token is invalid.', addsTests.createAddWithInvalidToken);
+    });
+
+    describe('- /Adds @ GET', () => {
+      it('- Should get the user ad.', addsTests.getAdByUserId);
+    });
+
+    describe('- /Adds/cp/:cp?distance=XXX @ GET', () => {
+      it('- Should return the Ads that are within a specific distance (query params \'distance\') from the given postal code (url params).', addsTests.getAdsWithinDistanceAndCP);
+      it('- Should not return the Ads that are not within the specific distance (query params \'distance\') from the given postal code (url params).', addsTests.dontGetAdWithLowRange);
+    });
+
+    describe('- /Adds @ DELETE', () => {
+      it('- Should delete a test Ad (created before).', addsTests.deleteAd);
     });
   });
 
