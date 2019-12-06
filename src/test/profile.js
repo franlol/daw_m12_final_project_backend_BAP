@@ -119,7 +119,7 @@ const getProfileByIdWithValidToken = async () => {
   expect(res.body.user).toHaveProperty('name', 'updated User for Jest testsa1asd');
   expect(res.body.user).toHaveProperty('surname', 'updated test');
   expect(res.body.user).toHaveProperty('email', `a${process.env.TEST_EMAIL}`);
-  expect(res.body.user).toHaveProperty('cp', '99999');
+  expect(res.body.user).toHaveProperty('cp', '08730');
   expect(res.status).toEqual(200);
 }
 

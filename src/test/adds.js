@@ -8,6 +8,8 @@ const data = require('./config');
 const { getToken, getUser } = require('./utils.js');
 const { createUserTest } = require('./moked');
 
+let ad = null;
+
 const createAdd = async () => {
   await createUserTest();
   const token = await getToken(data.user.email, data.user.password);
@@ -29,6 +31,7 @@ const createAdd = async () => {
       price: 25
     });
 
+  ad = res.body;
   expect(res.status).toEqual(201);
 };
 
@@ -69,22 +72,62 @@ const getAdByUserId = async () => {
   expect(res.body.ad).toHaveProperty('description', 'This is a test add');
   expect(res.body.ad).toHaveProperty('range', 5);
   expect(res.body.ad).toHaveProperty('price', 25);
-
 };
 
-const deleteAd = async (done) => {
+const getAdsWithinDistanceAndCP = async () => {
   const token = await getToken(data.user.email, data.user.password);
   const loggedUser = await getUser(token);
 
-  // Get add by user (no endpoint ATM)
-  // TODO delete after find
+  const res = await request(app)
+    .get('/adds/cp/08720?distance=6')
+    .set({ ['access-token']: `Bearer ${token}` });
 
-  return done();
+    const ourAd = res.body.ads.filter(ad => {
+      return loggedUser._id === ad.owner;
+    });
+
+    expect(res.status).toEqual(200);
+    expect(ourAd.length).toBeGreaterThanOrEqual(1);
+    expect(ourAd[0]).toHaveProperty('title', 'Test Add');
+    expect(ourAd[0]).toHaveProperty('description', 'This is a test add');
+    expect(ourAd[0]).toHaveProperty('range', 5);
+    expect(ourAd[0]).toHaveProperty('price', 25);
+}
+
+const dontGetAdWithLowRange = async () => {
+    const token = await getToken(data.user.email, data.user.password);
+    const loggedUser = await getUser(token);
+  
+    const res = await request(app)
+      .get('/adds/cp/08720?distance=2')
+      .set({ ['access-token']: `Bearer ${token}` });
+  
+      const ourAd = res.body.ads.filter(ad => {
+        return loggedUser._id === ad.owner;
+      });
+
+      expect(res.status).toEqual(200);
+      expect(ourAd.length).toBe(0);
+  }
+
+const deleteAd = async () => {
+  const token = await getToken(data.user.email, data.user.password);
+
+  const res = await request(app)
+    .delete(`/adds/${ad._id}`)
+    .set({ ['access-token']: `Bearer ${token}` });
+
+  expect(res.status).toEqual(200);
 }
 
 module.exports = {
   createAdd,
   createAddWithInvalidToken,
+
   getAdByUserId,
+
+  getAdsWithinDistanceAndCP,
+  dontGetAdWithLowRange,
+
   deleteAd
 };

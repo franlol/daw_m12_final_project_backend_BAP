@@ -3,8 +3,10 @@ const mongoose = require('mongoose');
 
 const Add = require('../database/models/Add');
 const verifyToken = require('./middlewares/auth');
+const { verifyZipcodeInParams } = require('./middlewares/zipcodes');
 
 const router = express.Router();
+const distanceBetween = require('../utils/haversine');
 
 router.post('/', verifyToken, (req, res, next) => {
   if (!req.session.user) {
@@ -29,7 +31,8 @@ router.post('/', verifyToken, (req, res, next) => {
     description,
     range,
     services,
-    price
+    price,
+    location: req.session.user.location
   });
 
   return add
@@ -61,6 +64,40 @@ router.get('/:userId', verifyToken, async (req, res, next) => {
 
     res.status(200);
     return res.json({ ad });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get('/cp/:cp', verifyZipcodeInParams, verifyToken, async (req, res, next) => {
+  try {
+    // If the distance in the query params is lower than 500km, we keep it up. Else, we fix it to 50km. (* 1000 because 1km equals 1000m)
+    const distanceToSearch = req.query.distance && (req.query.distance < 500 ? req.query.distance : 50) * 1000;
+    const coordinates = [res.location.latitude, res.location.longitude]
+
+    const ads = await Add.find({
+      location: {
+        $near: {
+          $maxDistance: distanceToSearch,
+          $geometry: {
+            type: "Point",
+            coordinates
+          }
+        }
+      }
+    });
+
+    const [zipcodeLat, zipcodeLon] = coordinates;
+
+    const filteredAnuncis = ads.filter(ad => {
+      const [adLat, adLon] = ad.location.coordinates;
+      return ad.range >= Math.floor(distanceBetween([zipcodeLat, zipcodeLon], [adLat, adLon]));
+    });
+
+    res.status(200);
+    return res.json({
+      ads: filteredAnuncis
+    });
   } catch (err) {
     next(err);
   }
