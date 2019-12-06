@@ -71,6 +71,7 @@ router.get('/:userId', verifyToken, async (req, res, next) => {
 
 router.get('/cp/:cp', verifyZipcode, verifyToken, async (req, res, next) => {
   try {
+    // If the distance in the query params is lower than 500km, we keep it up. Else, we fix it to 50km. (* 1000 because 1km equals 1000m)
     const distanceToSearch = req.query.distance && (req.query.distance < 500 ? req.query.distance : 50) * 1000;
     const coordinates = [res.location.latitude, res.location.longitude]
 
