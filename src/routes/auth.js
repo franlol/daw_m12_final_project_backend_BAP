@@ -1,10 +1,10 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const z1p = require('z1p');
 
 const User = require('../database/models/User');
 
+const { verifyZipcodeInBody } = require('../routes/middlewares/zipcodes');
 const verifyToken = require('./middlewares/auth');
 const {
   checkUserFields,
@@ -18,19 +18,12 @@ router.post(
   '/signup',
   checkUserFields,
   verifyUserFields,
+  verifyZipcodeInBody,
   async (req, res, next) => {
     const { username, name, surname, email, password, cp } = req.body;
 
     try {
-      const location = await z1p(['ES']).raw(v => v.zip_code == cp)[0];
-      if (!location || location.length === 0) {
-        res.status(422);
-        return res.json({
-          auth: false,
-          code: 8,
-          message: 'Invalid spanish zipcode'
-        });
-      }
+      const { location } = res;
 
       const user = await User.findOne({ email });
       if (user) {

@@ -2,10 +2,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
-const z1p = require('z1p');
 
 const User = require('../database/models/User');
 
+const { verifyZipcodeInBody } = require('../routes/middlewares/zipcodes');
 const verifyToken = require('./middlewares/auth');
 const {
   updateProfileUserFields,
@@ -31,6 +31,7 @@ router.put(
   verifyToken,
   updateProfileUserFields,
   updateProfileVerifyUserFields,
+  verifyZipcodeInBody,
   async (req, res, next) => {
     try {
       delete req.body.password;
@@ -39,16 +40,8 @@ router.put(
         { ...req.body }
       ).select('-password');
 
-      const { cp } = req.body;
-      const location = await z1p(['ES']).raw(v => v.zip_code == cp)[0];
-      if (!location || location.length === 0) {
-        res.status(422);
-        return res.json({
-          auth: false,
-          code: 8,
-          message: 'Invalid spanish zipcode'
-        });
-      }
+      const { location } = res;
+
       const updated = {
         ...req.session.user,
         ...req.body,

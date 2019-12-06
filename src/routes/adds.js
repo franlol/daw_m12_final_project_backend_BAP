@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const Add = require('../database/models/Add');
 const verifyToken = require('./middlewares/auth');
-const { verifyZipcode } = require('./middlewares/zipcodes');
+const { verifyZipcodeInParams } = require('./middlewares/zipcodes');
 
 const router = express.Router();
 const distanceBetween = require('../utils/haversine');
@@ -69,7 +69,7 @@ router.get('/:userId', verifyToken, async (req, res, next) => {
   }
 });
 
-router.get('/cp/:cp', verifyZipcode, verifyToken, async (req, res, next) => {
+router.get('/cp/:cp', verifyZipcodeInParams, verifyToken, async (req, res, next) => {
   try {
     // If the distance in the query params is lower than 500km, we keep it up. Else, we fix it to 50km. (* 1000 because 1km equals 1000m)
     const distanceToSearch = req.query.distance && (req.query.distance < 500 ? req.query.distance : 50) * 1000;
