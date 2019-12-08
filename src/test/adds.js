@@ -83,7 +83,7 @@ const getAdsWithinDistanceAndCP = async () => {
     .set({ ['access-token']: `Bearer ${token}` });
 
     const ourAd = res.body.ads.filter(ad => {
-      return loggedUser._id === ad.owner;
+      return loggedUser._id === ad.owner._id;
     });
 
     expect(res.status).toEqual(200);
