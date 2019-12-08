@@ -85,7 +85,7 @@ router.get('/cp/:cp', verifyZipcodeInParams, verifyToken, async (req, res, next)
           }
         }
       }
-    });
+    }).populate('owner', 'username _id');
 
     const [zipcodeLat, zipcodeLon] = coordinates;
 
@@ -143,5 +143,23 @@ router.delete('/:id', verifyToken, async (req, res, next) => {
     next(err);
   }
 });
+
+router.put('/:id', verifyToken, async (req, res, next) => {
+  try {
+    const test = await Add.findOneAndUpdate({ _id: req.body._id }, req.body);
+
+    console.log(test)
+
+    res.status(200);
+    res.json({
+      message: 'Ad updated',
+    });
+    
+  } catch (err) {
+    next(err);
+  }
+}
+
+);
 
 module.exports = router;
