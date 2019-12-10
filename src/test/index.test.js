@@ -86,6 +86,12 @@ describe('BAP TESTS', () => {
     describe('- /Adds @ DELETE', () => {
       it('- Should delete a test Ad (created before).', addsTests.deleteAd);
     });
+
+    describe('- /Adds @ PUT', () => {
+      it('- Should update a test Ad (created before).', addsTests.updateAd);
+      it('- Should not update an Ad with invalid token.', addsTests.updateAdWithInvalidToken);
+      it('- Should not update an Ad with expired token.', addsTests.updateAdWithExpiredToken);
+    })
   });
 
 });

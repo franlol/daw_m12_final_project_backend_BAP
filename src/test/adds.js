@@ -120,6 +120,75 @@ const deleteAd = async () => {
   expect(res.status).toEqual(200);
 }
 
+const updateAd = async () => {
+  const token = await getToken(data.user.email, data.user.password);
+
+  const res = await request(app)
+    .put(`/adds/${ad._id}`)
+    .set({ ['access-token']: `Bearer ${token}` })
+    .send({
+      title: 'Test Add updated',
+      description: 'This is a test add updated',
+      range: 10,
+      services: {
+        babysitter: false,
+        classes: false,
+        cleaner: true,
+        pets: true
+      },
+      price: 50
+    });
+
+    expect(res.status).toEqual(200);
+    expect(res.body.message).toEqual('Ad updated');
+}
+
+const updateAdWithInvalidToken = async () => {
+  const token = await getToken(data.user.email, data.user.password);
+
+  const res = await request(app)
+    .put(`/adds/${ad._id}`)
+    .set({ ['access-token']: `Bearer 12345` })
+    .send({
+      title: 'Test Add updated',
+      description: 'This is a test add updated',
+      range: 10,
+      services: {
+        babysitter: false,
+        classes: false,
+        cleaner: true,
+        pets: true
+      },
+      price: 50
+    });
+
+    expect(res.status).toEqual(401);
+    expect(res.body.message).toEqual('Token invalid');
+}
+
+const updateAdWithExpiredToken = async () => {
+  const token = process.env.TEST_EXPIRED_TOKEN;
+
+  const res = await request(app)
+    .put(`/adds/${ad._id}`)
+    .set({ ['access-token']: `Bearer ${token}` })
+    .send({
+      title: 'Test Add updated',
+      description: 'This is a test add updated',
+      range: 10,
+      services: {
+        babysitter: false,
+        classes: false,
+        cleaner: true,
+        pets: true
+      },
+      price: 50
+    });
+
+    expect(res.status).toEqual(401);
+    expect(res.body.message).toEqual('Token expired');
+}
+
 module.exports = {
   createAdd,
   createAddWithInvalidToken,
@@ -129,5 +198,9 @@ module.exports = {
   getAdsWithinDistanceAndCP,
   dontGetAdWithLowRange,
 
-  deleteAd
+  deleteAd,
+
+  updateAd,
+  updateAdWithInvalidToken,
+  updateAdWithExpiredToken,
 };
