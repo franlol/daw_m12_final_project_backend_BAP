@@ -55,7 +55,7 @@ router.get('/:userId', verifyToken, async (req, res, next) => {
     }
 
     const ad = await Add.findOne({ owner: userId });
-    if (!ad) return res.status(204);
+    if (!ad) return res.status(204).end();
 
     res.status(200);
     return res.json({ ad });

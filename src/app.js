@@ -3,6 +3,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const session = require('express-session');
+const morgan = require("morgan")
 
 // Own modules
 const routes = require('./routes');
@@ -11,6 +12,7 @@ const routes = require('./routes');
 const app = express();
 
 // Middlewares
+app.use(morgan('dev'));
 app.use(cors());
 app.use(express.json());
 app.use(session({ secret: 's3cr37', saveUninitialized: true, resave: true })); // TODO generate new key, and put in envs
