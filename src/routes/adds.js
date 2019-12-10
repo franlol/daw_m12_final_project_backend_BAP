@@ -55,12 +55,7 @@ router.get('/:userId', verifyToken, async (req, res, next) => {
     }
 
     const ad = await Add.findOne({ owner: userId });
-    if (!ad) {
-      res.status(404);
-      return res.json({
-        message: 'Ad not found.'
-      });
-    }
+    if (!ad) return res.status(204);
 
     res.status(200);
     return res.json({ ad });
@@ -154,7 +149,7 @@ router.put('/:id', verifyToken, async (req, res, next) => {
     res.json({
       message: 'Ad updated',
     });
-    
+
   } catch (err) {
     next(err);
   }
