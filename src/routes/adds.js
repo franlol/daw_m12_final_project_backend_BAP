@@ -50,7 +50,7 @@ router.get('/:userId', verifyToken, async (req, res, next) => {
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       res.status(422);
       return res.json({
-        message: 'Invalid Ad ID'
+        message: 'Invalid User ID'
       });
     }
 
