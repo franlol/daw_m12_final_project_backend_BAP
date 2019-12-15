@@ -5,7 +5,7 @@ const router = express.Router();
 
 const User = require('../database/models/User');
 
-const { verifyZipcodeInBody } = require('../routes/middlewares/zipcodes');
+const { verifyPostalCodeInBody } = require('./middlewares/postalCodes');
 const verifyToken = require('./middlewares/auth');
 const {
   updateProfileUserFields,
@@ -31,7 +31,7 @@ router.put(
   verifyToken,
   updateProfileUserFields,
   updateProfileVerifyUserFields,
-  verifyZipcodeInBody,
+  verifyPostalCodeInBody,
   async (req, res, next) => {
     try {
       delete req.body.password;

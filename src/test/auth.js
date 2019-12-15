@@ -17,7 +17,7 @@ const loginUnexistentUserame = async () => {
 
   expect(res.status).toEqual(422);
   expect(res.body.auth).toBe(false);
-}
+};
 
 const loginWithIncorrectCredentials = async () => {
   const res = await request(app)
@@ -29,7 +29,7 @@ const loginWithIncorrectCredentials = async () => {
 
   expect(res.status).toEqual(422);
   expect(res.body.auth).toBe(false);
-}
+};
 
 const loginWithEmptyFields = async () => {
   const res = await request(app)
@@ -41,7 +41,7 @@ const loginWithEmptyFields = async () => {
 
   expect(res.status).toEqual(422);
   expect(res.body.auth).toBe(false);
-}
+};
 
 const loginMokedUser = async () => {
   const res = await request(app)
@@ -53,7 +53,7 @@ const loginMokedUser = async () => {
   expect(res.status).toEqual(200);
   expect(res.body.auth).toBe(true);
   expect(res.body).toHaveProperty('token');
-}
+};
 
 // SIGNUP
 const signupWithInvalidPassword = async () => {
@@ -65,13 +65,13 @@ const signupWithInvalidPassword = async () => {
       surname: 'test',
       email: `a${process.env.TEST_EMAIL}`,
       password: 'asd',
-      cp: '00000',
+      postalCode: '00000',
       location: [0, 0]
     });
 
   expect(res.status).toEqual(422);
   expect(res.body.auth).toBe(false);
-}
+};
 
 const signupWithInvalidUsername = async () => {
   const res = await request(app)
@@ -82,13 +82,13 @@ const signupWithInvalidUsername = async () => {
       surname: 'test',
       email: `a${process.env.TEST_EMAIL}`,
       password: 'asd',
-      cp: '00000',
+      postalCode: '00000',
       location: [0, 0]
     });
 
   expect(res.status).toEqual(422);
   expect(res.body.auth).toBe(false);
-}
+};
 
 const signupWithInvalidZipcode = async () => {
   const res = await request(app)
@@ -99,12 +99,12 @@ const signupWithInvalidZipcode = async () => {
       surname: 'test',
       email: `a${process.env.TEST_EMAIL}`,
       password: process.env.TEST_PASSWORD,
-      cp: '00000',
+      postalCode: '00000'
     });
 
   expect(res.status).toEqual(422);
   expect(res.body.auth).toBe(false);
-}
+};
 
 const signupExistingUser = async () => {
   const res = await request(app)
@@ -115,12 +115,12 @@ const signupExistingUser = async () => {
       surname: 'test',
       email: `${process.env.TEST_EMAIL}`,
       password: process.env.TEST_PASSWORD,
-      cp: '08730',
+      postalCode: '08730'
     });
 
   expect(res.status).toEqual(409);
   expect(res.body.auth).toBe(false);
-}
+};
 
 signupWithEmptyFields = async () => {
   const res = await request(app)
@@ -131,12 +131,12 @@ signupWithEmptyFields = async () => {
       surname: undefined,
       email: undefined,
       password: undefined,
-      cp: undefined,
+      postalCode: undefined
     });
 
   expect(res.status).toEqual(422);
   expect(res.body.auth).toBe(false);
-}
+};
 
 const signUpNewUser = async () => {
   const res = await request(app)
@@ -147,13 +147,13 @@ const signUpNewUser = async () => {
       surname: 'test',
       email: `a${process.env.TEST_EMAIL}`,
       password: process.env.TEST_PASSWORD,
-      cp: '08730',
+      postalCode: '08730'
     });
 
   expect(res.status).toEqual(200);
   expect(res.body.auth).toBe(true);
   expect(res.body).toHaveProperty('token');
-}
+};
 
 const logoutUserWithValidToken = async () => {
   const token = await getToken(data.user.email, data.user.password);
@@ -162,10 +162,10 @@ const logoutUserWithValidToken = async () => {
     .post('/auth/logout')
     .set({ ['access-token']: `Baerer ${token}` });
 
-    expect(res.body.auth).toBe(false);
-    expect(res.body.message).toEqual('Logged out');
-    expect(res.status).toEqual(200);
-}
+  expect(res.body.auth).toBe(false);
+  expect(res.body.message).toEqual('Logged out');
+  expect(res.status).toEqual(200);
+};
 
 const logoutUserWithInvalidToken = async () => {
   const token = await getToken(data.user.email, data.user.password);
@@ -174,8 +174,8 @@ const logoutUserWithInvalidToken = async () => {
     .post('/auth/logout')
     .set({ ['access-token']: `Baerer a${token}` });
 
-    expect(res.status).toEqual(401);
-}
+  expect(res.status).toEqual(401);
+};
 
 module.exports = {
   loginUnexistentUserame,
@@ -189,7 +189,7 @@ module.exports = {
   signupExistingUser,
   signupWithEmptyFields,
   signUpNewUser,
-  
+
   logoutUserWithValidToken,
   logoutUserWithInvalidToken
-}
+};
