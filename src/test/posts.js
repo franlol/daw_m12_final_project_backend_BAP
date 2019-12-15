@@ -74,12 +74,12 @@ const getPostByUserId = async () => {
   expect(res.body.post).toHaveProperty('price', 25);
 };
 
-const getPostsWithinDistanceAndCP = async () => {
+const getPostsWithinDistanceAndPostalCode = async () => {
   const token = await getToken(data.user.email, data.user.password);
   const loggedUser = await getUser(token);
 
   const res = await request(app)
-    .get('/posts/cp/08720?distance=6')
+    .get('/posts/postalCode/08720?distance=6')
     .set({ ['access-token']: `Bearer ${token}` });
 
   const ourPost = res.body.posts.filter(post => {
@@ -99,7 +99,7 @@ const dontGetPostWithLowRange = async () => {
   const loggedUser = await getUser(token);
 
   const res = await request(app)
-    .get('/posts/cp/08720?distance=2')
+    .get('/posts/postalCode/08720?distance=2')
     .set({ ['access-token']: `Bearer ${token}` });
 
   const ourPost = res.body.posts.filter(ad => {
@@ -126,7 +126,7 @@ module.exports = {
 
   getPostByUserId,
 
-  getPostsWithinDistanceAndCP,
+  getPostsWithinDistanceAndPostalCode,
   dontGetPostWithLowRange,
 
   deletePost

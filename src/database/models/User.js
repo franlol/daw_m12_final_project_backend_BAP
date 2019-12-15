@@ -57,7 +57,7 @@ const userSchema = new Schema(
         required: true
       }
     },
-    cp: {
+    postalCode: {
       type: String,
       required: true
     }

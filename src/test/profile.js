@@ -16,17 +16,17 @@ const getOwnProfileWithValidToken = async () => {
   expect(loggedUser).toHaveProperty('name');
   expect(loggedUser).toHaveProperty('surname');
   expect(loggedUser).toHaveProperty('email');
-  expect(loggedUser).toHaveProperty('cp');
+  expect(loggedUser).toHaveProperty('postalCode');
   expect(loggedUser).toHaveProperty('createdAt');
   expect(loggedUser).toHaveProperty('updatedAt');
   expect(loggedUser).not.toHaveProperty('password');
-}
+};
 
 const getOwnProfileWithoutToken = async () => {
   const res = await request(app).get('/profile');
 
   expect(res.status).toEqual(403);
-}
+};
 
 const getOwnProfileWithExpiredToken = async () => {
   const res = await request(app)
@@ -34,7 +34,7 @@ const getOwnProfileWithExpiredToken = async () => {
     .set({ ['access-token']: `Baerer ${process.env.TEST_EXPIRED_TOKEN}` });
 
   expect(res.status).toEqual(401);
-}
+};
 
 const getOwnProfileWithInvalidToken = async () => {
   const token = await getToken(data.user.email, data.user.password);
@@ -44,7 +44,7 @@ const getOwnProfileWithInvalidToken = async () => {
     .set({ ['access-token']: `Baerer ${token}a` });
 
   expect(res.status).toEqual(401);
-}
+};
 
 const updateTestingUser = async () => {
   const token = await getToken(data.user.email, data.user.password);
@@ -53,11 +53,11 @@ const updateTestingUser = async () => {
     .put('/profile')
     .set({ ['access-token']: `Baerer ${token}` })
     .send({
-      'username': 'userUpdated',
-      'name': 'updated User for Jest testsa1asd',
-      'surname': 'updated test',
-      'email': `a${process.env.TEST_EMAIL}`,
-      'cp': '08730',
+      username: 'userUpdated',
+      name: 'updated User for Jest testsa1asd',
+      surname: 'updated test',
+      email: `a${process.env.TEST_EMAIL}`,
+      postalCode: '08730'
     });
 
   expect(res.body).toHaveProperty('message', 'User updated');
@@ -65,10 +65,16 @@ const updateTestingUser = async () => {
   expect(res.body).toHaveProperty('updatedUser');
 
   expect(res.body.updatedUser).toHaveProperty('username', 'userUpdated');
-  expect(res.body.updatedUser).toHaveProperty('name', 'updated User for Jest testsa1asd');
+  expect(res.body.updatedUser).toHaveProperty(
+    'name',
+    'updated User for Jest testsa1asd'
+  );
   expect(res.body.updatedUser).toHaveProperty('surname', 'updated test');
-  expect(res.body.updatedUser).toHaveProperty('email', `a${process.env.TEST_EMAIL}`);
-  expect(res.body.updatedUser).toHaveProperty('cp', '08730');
+  expect(res.body.updatedUser).toHaveProperty(
+    'email',
+    `a${process.env.TEST_EMAIL}`
+  );
+  expect(res.body.updatedUser).toHaveProperty('postalCode', '08730');
   expect(res.body.updatedUser).toHaveProperty('location');
 
   expect(res.body.updatedUser.location).toHaveProperty('accuracy');
@@ -85,26 +91,26 @@ const updateTestingUser = async () => {
   expect(res.body.updatedUser.location).toHaveProperty('zip_code');
 
   expect(res.status).toEqual(200);
-}
+};
 
-const updateTestingUserWithInvalidZipcode = async () => {
+const updateTestingUserWithInvalidPostalCode = async () => {
   const token = await getToken(`a${data.user.email}`, data.user.password);
 
   const res = await request(app)
     .put('/profile')
     .set({ ['access-token']: `Baerer ${token}` })
     .send({
-      'username': 'userUpdated',
-      'name': 'updated User for Jest testsa1asd',
-      'surname': 'updated test',
-      'email': `a${process.env.TEST_EMAIL}`,
-      'cp': '99999',
+      username: 'userUpdated',
+      name: 'updated User for Jest testsa1asd',
+      surname: 'updated test',
+      email: `a${process.env.TEST_EMAIL}`,
+      postalCode: '99999'
     });
 
-  expect(res.body).toHaveProperty('message', 'Invalid spanish zipcode');
+  expect(res.body).toHaveProperty('message', 'Invalid spanish postal code');
   expect(res.body).toHaveProperty('auth', false);
   expect(res.status).toEqual(422);
-}
+};
 
 const getProfileByIdWithValidToken = async () => {
   const token = await getToken(`a${data.user.email}`, data.user.password);
@@ -116,12 +122,15 @@ const getProfileByIdWithValidToken = async () => {
 
   expect(res.body).toHaveProperty('user');
   expect(res.body.user).toHaveProperty('username', 'userUpdated');
-  expect(res.body.user).toHaveProperty('name', 'updated User for Jest testsa1asd');
+  expect(res.body.user).toHaveProperty(
+    'name',
+    'updated User for Jest testsa1asd'
+  );
   expect(res.body.user).toHaveProperty('surname', 'updated test');
   expect(res.body.user).toHaveProperty('email', `a${process.env.TEST_EMAIL}`);
-  expect(res.body.user).toHaveProperty('cp', '08730');
+  expect(res.body.user).toHaveProperty('postalCode', '08730');
   expect(res.status).toEqual(200);
-}
+};
 
 const getProfileByIdWithInvalidToken = async () => {
   const token = await getToken(`a${data.user.email}`, data.user.password);
@@ -129,10 +138,10 @@ const getProfileByIdWithInvalidToken = async () => {
 
   const res = await request(app)
     .get(`/profile/${loggedUser._id}`)
-    .set({ ['access-token']: `Baerer ${token}a` })
+    .set({ ['access-token']: `Baerer ${token}a` });
 
   expect(res.status).toEqual(401);
-}
+};
 
 const getProfileWithInvalidId = async () => {
   const token = await getToken(`a${data.user.email}`, data.user.password);
@@ -140,10 +149,10 @@ const getProfileWithInvalidId = async () => {
 
   const res = await request(app)
     .get(`/profile/${loggedUser._id}a`)
-    .set({ ['access-token']: `Baerer ${token}` })
+    .set({ ['access-token']: `Baerer ${token}` });
 
   expect(res.status).toEqual(422);
-}
+};
 
 module.exports = {
   getOwnProfileWithValidToken,
@@ -152,9 +161,9 @@ module.exports = {
   getOwnProfileWithInvalidToken,
 
   updateTestingUser,
-  updateTestingUserWithInvalidZipcode,
+  updateTestingUserWithInvalidPostalCode,
 
   getProfileByIdWithValidToken,
   getProfileByIdWithInvalidToken,
   getProfileWithInvalidId
-}
+};

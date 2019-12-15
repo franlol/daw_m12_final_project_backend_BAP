@@ -1,9 +1,9 @@
 const emailRegex = require('email-regex');
 
 const checkUserFields = (req, res, next) => {
-  const { username, name, surname, email, password, cp } = req.body;
+  const { username, name, surname, email, password, postalCode } = req.body;
 
-  if (!username || !name || !surname || !email || !password || !cp) {
+  if (!username || !name || !surname || !email || !password || !postalCode) {
     res.status(422);
     return res.json({
       auth: false,
@@ -16,9 +16,9 @@ const checkUserFields = (req, res, next) => {
 };
 
 const updateProfileUserFields = (req, res, next) => {
-  const { username, name, surname, email, cp } = req.body;
+  const { username, name, surname, email, postalCode } = req.body;
 
-  if (!username || !name || !surname || !email || !cp) {
+  if (!username || !name || !surname || !email || !postalCode) {
     res.status(422);
     return res.json({
       auth: false,

@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const Post = require('../database/models/Post');
 const verifyToken = require('./middlewares/auth');
-const { verifyZipcodeInParams } = require('./middlewares/zipcodes');
+const { verifyPostalCodeInParams } = require('./middlewares/postalCodes');
 
 const router = express.Router();
 const distanceBetween = require('../utils/haversine');
@@ -65,8 +65,8 @@ router.get('/:userId', verifyToken, async (req, res, next) => {
 });
 
 router.get(
-  '/cp/:cp',
-  verifyZipcodeInParams,
+  '/postalCode/:postalCode',
+  verifyPostalCodeInParams,
   verifyToken,
   async (req, res, next) => {
     try {
@@ -88,14 +88,14 @@ router.get(
         }
       }).populate('owner', 'username _id');
 
-      const [zipcodeLat, zipcodeLon] = coordinates;
+      const [postalCodeLat, postalCodeLon] = coordinates;
 
       const filteredAnuncis = posts.filter(post => {
         const [postLat, postLon] = post.location.coordinates;
         return (
           post.range >=
           Math.floor(
-            distanceBetween([zipcodeLat, zipcodeLon], [postLat, postLon])
+            distanceBetween([postalCodeLat, postalCodeLon], [postLat, postLon])
           )
         );
       });

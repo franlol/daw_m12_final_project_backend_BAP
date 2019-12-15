@@ -92,8 +92,8 @@ describe('BAP TESTS', () => {
     describe('- /Profile @ PUT', () => {
       it('- Should update testing user.', profileTests.updateTestingUser);
       it(
-        '- Should not update testing user with invalid zipcode.',
-        profileTests.updateTestingUserWithInvalidZipcode
+        '- Should not update testing user with invalid postal code.',
+        profileTests.updateTestingUserWithInvalidPostalCode
       );
     });
 
@@ -126,10 +126,10 @@ describe('BAP TESTS', () => {
       it('- Should get the user post.', postsTests.getPostByUserId);
     });
 
-    describe('- /Posts/cp/:cp?distance=XXX @ GET', () => {
+    describe('- /Posts/postalCode/:postalCode?distance=XXX @ GET', () => {
       it(
         "- Should return the Posts that are within a specific distance (query params 'distance') from the given postal code (url params).",
-        postsTests.getPostsWithinDistanceAndCP
+        postsTests.getPostsWithinDistanceAndPostalCode
       );
       it(
         "- Should not return the Posts that are not within the specific distance (query params 'distance') from the given postal code (url params).",
