@@ -2,6 +2,8 @@
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const dotenv = require('dotenv');
+dotenv.config({ path: process.env.INIT_CWD + '/.env' });
 
 const userSchema = new Schema(
   {
@@ -20,6 +22,11 @@ const userSchema = new Schema(
     email: {
       type: String,
       required: true
+    },
+    image: {
+      type: String,
+      required: true,
+      default: process.env.USER_DEFAULT_IMAGE
     },
     password: {
       type: String,
