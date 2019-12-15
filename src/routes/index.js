@@ -3,10 +3,10 @@ const router = express.Router();
 
 const authRouter = require('./auth');
 const profileRouter = require('./profile');
-const addsRouter = require('./adds');
+const postsRouter = require('./posts');
 
 router.use('/auth', authRouter);
 router.use('/profile', profileRouter);
-router.use('/adds', addsRouter);
+router.use('/posts', postsRouter);
 
 module.exports = router;

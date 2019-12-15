@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
-const Add = require('../database/models/Add');
+const Post = require('../database/models/Post');
 const verifyToken = require('./middlewares/auth');
 const { verifyZipcodeInParams } = require('./middlewares/zipcodes');
 
@@ -25,7 +25,7 @@ router.post('/', verifyToken, (req, res, next) => {
 
   const owner = req.session.user._id;
 
-  const add = new Add({
+  const post = new Post({
     owner,
     title,
     description,
@@ -35,10 +35,10 @@ router.post('/', verifyToken, (req, res, next) => {
     location: req.session.user.location
   });
 
-  return add
+  return post
     .save()
     .then(rs => {
-      res.status(201).json(add);
+      res.status(201).json(post);
     })
     .catch(err => res.status(500).json(err));
 });
@@ -54,49 +54,61 @@ router.get('/:userId', verifyToken, async (req, res, next) => {
       });
     }
 
-    const ad = await Add.findOne({ owner: userId });
-    if (!ad) return res.status(204).end();
+    const post = await Post.findOne({ owner: userId });
+    if (!post) return res.status(204).end();
 
     res.status(200);
-    return res.json({ ad });
+    return res.json({ post });
   } catch (err) {
     next(err);
   }
 });
 
-router.get('/cp/:cp', verifyZipcodeInParams, verifyToken, async (req, res, next) => {
-  try {
-    // If the distance in the query params is lower than 500km, we keep it up. Else, we fix it to 50km. (* 1000 because 1km equals 1000m)
-    const distanceToSearch = req.query.distance && (req.query.distance < 500 ? req.query.distance : 50) * 1000;
-    const coordinates = [res.location.latitude, res.location.longitude]
+router.get(
+  '/cp/:cp',
+  verifyZipcodeInParams,
+  verifyToken,
+  async (req, res, next) => {
+    try {
+      // If the distance in the query params is lower than 500km, we keep it up. Else, we fix it to 50km. (* 1000 because 1km equals 1000m)
+      const distanceToSearch =
+        req.query.distance &&
+        (req.query.distance < 500 ? req.query.distance : 50) * 1000;
+      const coordinates = [res.location.latitude, res.location.longitude];
 
-    const ads = await Add.find({
-      location: {
-        $near: {
-          $maxDistance: distanceToSearch,
-          $geometry: {
-            type: "Point",
-            coordinates
+      const posts = await Post.find({
+        location: {
+          $near: {
+            $maxDistance: distanceToSearch,
+            $geometry: {
+              type: 'Point',
+              coordinates
+            }
           }
         }
-      }
-    }).populate('owner', 'username _id');
+      }).populate('owner', 'username _id');
 
-    const [zipcodeLat, zipcodeLon] = coordinates;
+      const [zipcodeLat, zipcodeLon] = coordinates;
 
-    const filteredAnuncis = ads.filter(ad => {
-      const [adLat, adLon] = ad.location.coordinates;
-      return ad.range >= Math.floor(distanceBetween([zipcodeLat, zipcodeLon], [adLat, adLon]));
-    });
+      const filteredAnuncis = posts.filter(post => {
+        const [postLat, postLon] = post.location.coordinates;
+        return (
+          post.range >=
+          Math.floor(
+            distanceBetween([zipcodeLat, zipcodeLon], [postLat, postLon])
+          )
+        );
+      });
 
-    res.status(200);
-    return res.json({
-      ads: filteredAnuncis
-    });
-  } catch (err) {
-    next(err);
+      res.status(200);
+      return res.json({
+        posts: filteredAnuncis
+      });
+    } catch (err) {
+      next(err);
+    }
   }
-});
+);
 
 router.delete('/:id', verifyToken, async (req, res, next) => {
   const { id } = req.params;
@@ -106,33 +118,33 @@ router.delete('/:id', verifyToken, async (req, res, next) => {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       res.status(422);
       return res.json({
-        message: 'Invalid Ad ID.'
+        message: 'Invalid Post ID.'
       });
     }
 
-    const ad = await Add.findById(id)
+    const post = await Post.findById(id)
       .populate('owner')
       .lean();
 
-    if (!ad) {
+    if (!post) {
       res.status(404);
       return res.json({
-        message: 'Ad not found.'
+        message: 'Post not found.'
       });
     }
 
-    if (!ad.owner._id.equals(user._id)) {
+    if (!post.owner._id.equals(user._id)) {
       res.status(401);
       return res.json({
-        message: 'You cannot delete that ad.'
+        message: 'You cannot delete that post.'
       });
     }
 
-    await Add.findByIdAndDelete(id);
+    await Post.findByIdAndDelete(id);
 
     res.status(200);
     return res.json({
-      message: 'Ad removed.'
+      message: 'Post removed.'
     });
   } catch (err) {
     next(err);
@@ -141,20 +153,17 @@ router.delete('/:id', verifyToken, async (req, res, next) => {
 
 router.put('/:id', verifyToken, async (req, res, next) => {
   try {
-    const test = await Add.findOneAndUpdate({ _id: req.body._id }, req.body);
+    const test = await Post.findOneAndUpdate({ _id: req.body._id }, req.body);
 
-    console.log(test)
+    console.log(test);
 
     res.status(200);
     res.json({
-      message: 'Ad updated',
+      message: 'Post updated'
     });
-
   } catch (err) {
     next(err);
   }
-}
-
-);
+});
 
 module.exports = router;
