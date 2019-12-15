@@ -8,19 +8,19 @@ const data = require('./config');
 const { getToken, getUser } = require('./utils.js');
 const { createUserTest } = require('./moked');
 
-let ad = null;
+let post = null;
 
-const createAdd = async () => {
+const createPost = async () => {
   await createUserTest();
   const token = await getToken(data.user.email, data.user.password);
   const loggedUser = await getUser(token);
   const res = await request(app)
-    .post('/adds')
+    .post('/posts')
     .set({ ['access-token']: `Bearer ${token}` })
     .send({
       owner: loggedUser._id,
-      title: 'Test Add',
-      description: 'This is a test add',
+      title: 'Test Post',
+      description: 'This is a test post',
       range: 5,
       services: {
         babysitter: true,
@@ -31,20 +31,20 @@ const createAdd = async () => {
       price: 25
     });
 
-  ad = res.body;
+  post = res.body;
   expect(res.status).toEqual(201);
 };
 
-const createAddWithInvalidToken = async () => {
+const createPostWithInvalidToken = async () => {
   const token = process.env.TEST_EXPIRED_TOKEN;
   const loggedUser = await getUser(token);
   const res = await request(app)
-    .post('/adds')
+    .post('/posts')
     .set({ ['access-token']: `Bearer 123456` })
     .send({
       owner: loggedUser._id,
-      title: 'Test Add',
-      description: 'This is a test add',
+      title: 'Test Post',
+      description: 'This is a test post',
       range: 5,
       services: {
         babysitter: true,
@@ -59,75 +59,75 @@ const createAddWithInvalidToken = async () => {
   expect(res.body.message).toEqual('Token invalid');
 };
 
-const getAdByUserId = async () => {
+const getPostByUserId = async () => {
   const token = await getToken(data.user.email, data.user.password);
   const loggedUser = await getUser(token);
 
   const res = await request(app)
-    .get(`/adds/${loggedUser._id}`)
+    .get(`/posts/${loggedUser._id}`)
     .set({ ['access-token']: `Bearer ${token}` });
 
   expect(res.status).toEqual(200);
-  expect(res.body.ad).toHaveProperty('title', 'Test Add');
-  expect(res.body.ad).toHaveProperty('description', 'This is a test add');
-  expect(res.body.ad).toHaveProperty('range', 5);
-  expect(res.body.ad).toHaveProperty('price', 25);
+  expect(res.body.post).toHaveProperty('title', 'Test Post');
+  expect(res.body.post).toHaveProperty('description', 'This is a test post');
+  expect(res.body.post).toHaveProperty('range', 5);
+  expect(res.body.post).toHaveProperty('price', 25);
 };
 
-const getAdsWithinDistanceAndCP = async () => {
+const getPostsWithinDistanceAndPostalCode = async () => {
   const token = await getToken(data.user.email, data.user.password);
   const loggedUser = await getUser(token);
 
   const res = await request(app)
-    .get('/adds/cp/08720?distance=6')
+    .get('/posts/postalCode/08720?distance=6')
     .set({ ['access-token']: `Bearer ${token}` });
 
-    const ourAd = res.body.ads.filter(ad => {
-      return loggedUser._id === ad.owner._id;
-    });
+  const ourPost = res.body.posts.filter(post => {
+    return loggedUser._id === post.owner._id;
+  });
 
-    expect(res.status).toEqual(200);
-    expect(ourAd.length).toBeGreaterThanOrEqual(1);
-    expect(ourAd[0]).toHaveProperty('title', 'Test Add');
-    expect(ourAd[0]).toHaveProperty('description', 'This is a test add');
-    expect(ourAd[0]).toHaveProperty('range', 5);
-    expect(ourAd[0]).toHaveProperty('price', 25);
-}
+  expect(res.status).toEqual(200);
+  expect(ourPost.length).toBeGreaterThanOrEqual(1);
+  expect(ourPost[0]).toHaveProperty('title', 'Test Post');
+  expect(ourPost[0]).toHaveProperty('description', 'This is a test post');
+  expect(ourPost[0]).toHaveProperty('range', 5);
+  expect(ourPost[0]).toHaveProperty('price', 25);
+};
 
-const dontGetAdWithLowRange = async () => {
-    const token = await getToken(data.user.email, data.user.password);
-    const loggedUser = await getUser(token);
-  
-    const res = await request(app)
-      .get('/adds/cp/08720?distance=2')
-      .set({ ['access-token']: `Bearer ${token}` });
-  
-      const ourAd = res.body.ads.filter(ad => {
-        return loggedUser._id === ad.owner;
-      });
+const dontGetPostWithLowRange = async () => {
+  const token = await getToken(data.user.email, data.user.password);
+  const loggedUser = await getUser(token);
 
-      expect(res.status).toEqual(200);
-      expect(ourAd.length).toBe(0);
-  }
+  const res = await request(app)
+    .get('/posts/postalCode/08720?distance=2')
+    .set({ ['access-token']: `Bearer ${token}` });
 
-const deleteAd = async () => {
+  const ourPost = res.body.posts.filter(ad => {
+    return loggedUser._id === post.owner;
+  });
+
+  expect(res.status).toEqual(200);
+  expect(ourPost.length).toBe(0);
+};
+
+const deletePost = async () => {
   const token = await getToken(data.user.email, data.user.password);
 
   const res = await request(app)
-    .delete(`/adds/${ad._id}`)
+    .delete(`/posts/${post._id}`)
     .set({ ['access-token']: `Bearer ${token}` });
 
   expect(res.status).toEqual(200);
-}
+};
 
 module.exports = {
-  createAdd,
-  createAddWithInvalidToken,
+  createPost,
+  createPostWithInvalidToken,
 
-  getAdByUserId,
+  getPostByUserId,
 
-  getAdsWithinDistanceAndCP,
-  dontGetAdWithLowRange,
+  getPostsWithinDistanceAndPostalCode,
+  dontGetPostWithLowRange,
 
-  deleteAd
+  deletePost
 };

@@ -7,7 +7,7 @@ const ERROR_CODES = {
   5: 'Invalid username',
   6: 'Invalid email',
   7: 'Invalid password',
-  8: 'Invalid spanish zipcode',
+  8: 'Invalid spanish postal code',
   9: 'Email and password are required',
   10: 'Invalid user ID',
   11: 'User not found'

@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../database/models/User');
 
-const { verifyZipcodeInBody } = require('../routes/middlewares/zipcodes');
+const { verifyPostalCodeInBody } = require('../routes/middlewares/postalCodes');
 const verifyToken = require('./middlewares/auth');
 const {
   checkUserFields,
@@ -18,9 +18,9 @@ router.post(
   '/signup',
   checkUserFields,
   verifyUserFields,
-  verifyZipcodeInBody,
+  verifyPostalCodeInBody,
   async (req, res, next) => {
-    const { username, name, surname, email, password, cp } = req.body;
+    const { username, name, surname, email, password, postalCode } = req.body;
 
     try {
       const { location } = res;
@@ -44,7 +44,7 @@ router.post(
         surname,
         email,
         password: hashedPassword,
-        cp,
+        postalCode,
         location: {
           type: 'Point',
           coordinates: [location.latitude, location.longitude],
