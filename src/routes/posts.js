@@ -186,7 +186,7 @@ router.put('/:id', verifyToken, async (req, res, next) => {
     if (!post.owner._id.equals(user._id)) {
       res.status(401);
       return res.json({
-        message: 'You cannot delete that post.'
+        message: 'You cannot update that post.'
       });
     }
 
