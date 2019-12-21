@@ -137,11 +137,19 @@ describe('BAP TESTS', () => {
       );
     });
 
+    describe('- /Adds @ PUT', () => {
+      it('- Should update a test Post (created before).', postsTests.updatePost);
+      it('- Should not update a Post without required fields.', postsTests.updateWithoutRequiredFields);
+      it('- Should not update a non exising Post.', postsTests.updateNonExistingPost);
+    })
+
     describe('- /Posts @ DELETE', () => {
       it(
         '- Should delete a test Post (created before).',
         postsTests.deletePost
       );
     });
+
+
   });
 });

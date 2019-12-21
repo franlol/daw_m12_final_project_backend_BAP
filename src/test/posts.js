@@ -120,6 +120,73 @@ const deletePost = async () => {
   expect(res.status).toEqual(200);
 };
 
+const updatePost = async () => {
+  const token = await getToken(data.user.email, data.user.password);
+
+  const res = await request(app)
+    .put(`/posts/${post._id}`)
+    .set({ ['access-token']: `Bearer ${token}` })
+    .send({
+      title: 'Test Post updated',
+      description: 'This is a test post updated',
+      range: 10,
+      services: {
+        babysitter: false,
+        classes: false,
+        cleaner: true,
+        pets: true
+      },
+      price: 50
+    });
+
+    expect(res.status).toEqual(200);
+    expect(res.body.message).toEqual('Post updated');
+}
+
+const updateWithoutRequiredFields = async () => {
+  const token = await getToken(data.user.email, data.user.password);
+
+  const res = await request(app)
+    .put(`/posts/${post._id}`)
+    .set({ ['access-token']: `Bearer ${token}` })
+    .send({
+      range: 10,
+      services: {
+        babysitter: false,
+        classes: false,
+        cleaner: true,
+        pets: true
+      },
+      price: 50
+    });
+
+    expect(res.status).toEqual(422);
+    expect(res.body.message).toEqual('Title and description are required');
+}
+
+const updateNonExistingPost = async () => {
+  const token = await getToken(data.user.email, data.user.password);
+
+  const res = await request(app)
+    .put(`/posts/5dfde987ebae9a0d74b2ce74`)
+    .set({ ['access-token']: `Bearer ${token}` })
+    .send({
+      title: 'Test Post updated',
+      description: 'This is a test post updated',
+      range: 10,
+      services: {
+        babysitter: false,
+        classes: false,
+        cleaner: true,
+        pets: true
+      },
+      price: 50
+    });
+
+    expect(res.status).toEqual(404);
+    expect(res.body.message).toEqual('Post not found.');
+}
+
 module.exports = {
   createPost,
   createPostWithInvalidToken,
@@ -129,5 +196,9 @@ module.exports = {
   getPostsWithinDistanceAndPostalCode,
   dontGetPostWithLowRange,
 
-  deletePost
+  deletePost,
+
+  updatePost,
+  updateWithoutRequiredFields,
+  updateNonExistingPost
 };

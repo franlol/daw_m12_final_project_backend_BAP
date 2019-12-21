@@ -153,11 +153,12 @@ router.delete('/:id', verifyToken, async (req, res, next) => {
 
 router.put('/:id', verifyToken, async (req, res, next) => {
 
-  const { id, title, description } = req.params;
+  const { id } = req.params;
+  const { title, description } = req.body;
   const { user } = req.session;
 
   try {
-        
+   
     if (!mongoose.Types.ObjectId.isValid(id)) {
       res.status(422);
       return res.json({
@@ -171,7 +172,7 @@ router.put('/:id', verifyToken, async (req, res, next) => {
         message:'Title and description are required'
       });
     }
-
+    
     const post = await Post.findById(id)
       .populate('owner')
       .lean();
@@ -191,8 +192,6 @@ router.put('/:id', verifyToken, async (req, res, next) => {
     }
 
     const test = await Post.findOneAndUpdate({ _id: req.body._id }, req.body);
-
-    console.log(test);
 
     res.status(200);
     res.json({

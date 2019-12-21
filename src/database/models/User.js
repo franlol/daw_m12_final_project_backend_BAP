@@ -25,7 +25,7 @@ const userSchema = new Schema(
     },
     image: {
       type: String,
-      required: true,
+      required: false,
       default: process.env.USER_DEFAULT_IMAGE
     },
     password: {
