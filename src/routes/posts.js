@@ -86,7 +86,7 @@ router.get(
             }
           }
         }
-      }).populate('owner', 'username _id');
+      }).populate('owner', 'username _id image');
 
       const [postalCodeLat, postalCodeLon] = coordinates;
 
