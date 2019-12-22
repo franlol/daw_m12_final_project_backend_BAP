@@ -152,10 +152,46 @@ router.delete('/:id', verifyToken, async (req, res, next) => {
 });
 
 router.put('/:id', verifyToken, async (req, res, next) => {
-  try {
-    const test = await Post.findOneAndUpdate({ _id: req.body._id }, req.body);
 
-    console.log(test);
+  const { id } = req.params;
+  const { title, description } = req.body;
+  const { user } = req.session;
+
+  try {
+   
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.status(422);
+      return res.json({
+        message: 'Invalid Post ID.'
+      });
+    }
+
+    if(!title || !description){
+      res.status(422);
+      return res.json({
+        message:'Title and description are required'
+      });
+    }
+    
+    const post = await Post.findById(id)
+      .populate('owner')
+      .lean();
+
+    if (!post) {
+      res.status(404);
+      return res.json({
+        message: 'Post not found.'
+      });
+    }
+
+    if (!post.owner._id.equals(user._id)) {
+      res.status(401);
+      return res.json({
+        message: 'You cannot update that post.'
+      });
+    }
+
+    const test = await Post.findOneAndUpdate({ _id: req.body._id }, req.body);
 
     res.status(200);
     res.json({
