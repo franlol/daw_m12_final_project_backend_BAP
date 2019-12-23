@@ -6,7 +6,7 @@ const ObjectId = Schema.Types.ObjectId;
 
 const availabilitySchema = new Schema(
   {
-    post: {
+    postId: {
       type: ObjectId,
       ref: 'Post',
       required: true

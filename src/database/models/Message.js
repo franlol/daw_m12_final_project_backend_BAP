@@ -20,7 +20,6 @@ const messageSchema = new Schema(
             type: String,
             required: true
         },
-        
         status: Boolean
     },
     {
