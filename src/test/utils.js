@@ -9,15 +9,22 @@ const getToken = async (email, password) => {
       password
     });
 
-    return res.body.token.split(" ")[1];
-}
+  return res.body.token.split(' ')[1];
+};
 
 getUser = async token => {
   const res = await request(app)
     .get('/profile')
     .set({ ['access-token']: `Baerer ${token}` });
-
   return res.body;
-}
+};
 
-module.exports = { getToken, getUser }
+getPost = async token => {
+  const user = await getUser(token);
+  const res = await request(app)
+    .get(`/posts/${user._id}`)
+    .set({ ['access-token']: `Bearer ${token}` });
+  return res.body.post;
+};
+
+module.exports = { getToken, getUser, getPost };

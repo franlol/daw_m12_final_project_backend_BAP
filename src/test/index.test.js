@@ -4,7 +4,7 @@ const apiTests = require('./api');
 const authTests = require('./auth');
 const profileTests = require('./profile');
 const postsTests = require('./posts');
-
+const availabilityTests = require('./availability');
 const dbConnection = require('../database');
 const { deleteUserUpdatedTest } = require('./moked');
 dotenv.config();
@@ -137,11 +137,20 @@ describe('BAP TESTS', () => {
       );
     });
 
-    describe('- /Adds @ PUT', () => {
-      it('- Should update a test Post (created before).', postsTests.updatePost);
-      it('- Should not update a Post without required fields.', postsTests.updateWithoutRequiredFields);
-      it('- Should not update a non exising Post.', postsTests.updateNonExistingPost);
-    })
+    describe('- /Posts @ PUT', () => {
+      it(
+        '- Should update a test Post (created before).',
+        postsTests.updatePost
+      );
+      it(
+        '- Should not update a Post without required fields.',
+        postsTests.updateWithoutRequiredFields
+      );
+      it(
+        '- Should not update a non exising Post.',
+        postsTests.updateNonExistingPost
+      );
+    });
 
     describe('- /Posts @ DELETE', () => {
       it(
@@ -149,7 +158,32 @@ describe('BAP TESTS', () => {
         postsTests.deletePost
       );
     });
+  });
 
+  describe('# AVAILABILITY Testing', () => {
+    describe('- /Availabilty @ POST', () => {
+      it(
+        '- Should create a new availability.',
+        availabilityTests.createAvailability
+      );
+    });
 
+    describe('- /Availabilty @ GET', () => {
+      it(
+        '- Should get the post availability.',
+        availabilityTests.getAvailability
+      );
+    });
+
+    describe('- /Availabilty @ PUT', () => {
+      it(
+        '- Should update an existing availability.',
+        availabilityTests.updateAvailability
+      );
+      it(
+        '- Should not update when postId is not correct.',
+        availabilityTests.updateAvailabilityWithIvaldPostId
+      );
+    });
   });
 });
