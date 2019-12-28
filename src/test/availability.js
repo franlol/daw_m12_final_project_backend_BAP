@@ -8,7 +8,16 @@ const data = require('./config');
 const { getToken, getPost } = require('./utils.js');
 const { createPost } = require('./posts');
 
-let availability = null;
+const calendar = {
+  fh1: [true, false, false, true, true, false, false],
+  fh2: [true, false, true, false, true, false, false],
+  fh3: [false, false, true, false, false, true, false],
+  fh4: [false, true, true, false, false, true, false],
+  fh5: [false, true, false, false, true, false, false],
+  fh6: [true, false, true, true, true, false, false],
+  fh7: [true, false, true, false, true, true, false],
+  fh8: [false, false, false, false, true, true, false]
+};
 
 const createAvailability = async () => {
   await createPost();
@@ -19,16 +28,7 @@ const createAvailability = async () => {
     .set({ ['access-token']: `Bearer ${token}` })
     .send({
       postId: post._id,
-      calendar: {
-        fh1: [true, false, false, true, true, false, false],
-        fh2: [true, false, true, false, true, false, false],
-        fh3: [false, false, true, false, false, true, false],
-        fh4: [false, true, true, false, false, true, false],
-        fh5: [false, true, false, false, true, false, false],
-        fh6: [true, false, true, true, true, false, false],
-        fh7: [true, false, true, false, true, true, false],
-        fh8: [false, false, false, false, true, true, false]
-      }
+      calendar
     });
   availability = res.body.post;
   expect(res.status).toEqual(201);
@@ -50,16 +50,7 @@ const updateAvailability = async () => {
     .put(`/availability/${post._id}`)
     .set({ ['access-token']: `Bearer ${token}` })
     .send({
-      calendar: {
-        fh1: [false, false, false, true, true, false, false],
-        fh2: [true, false, true, false, true, false, false],
-        fh3: [false, false, true, false, false, true, false],
-        fh4: [false, true, true, false, false, true, false],
-        fh5: [false, true, false, false, true, false, false],
-        fh6: [true, false, true, true, true, false, false],
-        fh7: [true, false, true, false, true, true, false],
-        fh8: [false, false, false, false, true, true, false]
-      }
+      calendar
     });
 
   expect(res.status).toEqual(200);
@@ -73,16 +64,7 @@ const updateAvailabilityWithIvaldPostId = async () => {
     .put(`/availability/${postId}`)
     .set({ ['access-token']: `Bearer ${token}` })
     .send({
-      calendar: {
-        fh1: [false, false, false, true, true, false, false],
-        fh2: [true, false, true, false, true, false, false],
-        fh3: [false, false, true, false, false, true, false],
-        fh4: [false, true, true, false, false, true, false],
-        fh5: [false, true, false, false, true, false, false],
-        fh6: [true, false, true, true, true, false, false],
-        fh7: [true, false, true, false, true, true, false],
-        fh8: [false, false, false, false, true, true, false]
-      }
+      calendar
     });
 
   expect(res.status).toEqual(422);
