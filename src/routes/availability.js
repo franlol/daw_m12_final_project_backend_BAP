@@ -67,9 +67,6 @@ router.put('/:postId', verifyToken, async (req, res, next) => {
 
     const availability = await Availability.findOne({ postId });
 
-    console.log('***', user._id);
-    console.log('***', availability.owner);
-
     if (!availability.owner.equals(user._id)) {
       res.status(401);
       return res.json({
