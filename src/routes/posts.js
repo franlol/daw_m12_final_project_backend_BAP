@@ -20,10 +20,9 @@ router.post('/', verifyToken, (req, res, next) => {
   const description = req.body.description;
   const range = req.body.range;
   const services = req.body.services;
-
   const price = req.body.price;
-
   const owner = req.session.user._id;
+  const location = req.session.user.location;
 
   const post = new Post({
     owner,
@@ -32,7 +31,7 @@ router.post('/', verifyToken, (req, res, next) => {
     range,
     services,
     price,
-    location: req.session.user.location
+    location
   });
 
   return post
@@ -152,13 +151,11 @@ router.delete('/:id', verifyToken, async (req, res, next) => {
 });
 
 router.put('/:id', verifyToken, async (req, res, next) => {
-
   const { id } = req.params;
   const { title, description } = req.body;
   const { user } = req.session;
 
   try {
-   
     if (!mongoose.Types.ObjectId.isValid(id)) {
       res.status(422);
       return res.json({
@@ -166,13 +163,13 @@ router.put('/:id', verifyToken, async (req, res, next) => {
       });
     }
 
-    if(!title || !description){
+    if (!title || !description) {
       res.status(422);
       return res.json({
-        message:'Title and description are required'
+        message: 'Title and description are required'
       });
     }
-    
+
     const post = await Post.findById(id)
       .populate('owner')
       .lean();
