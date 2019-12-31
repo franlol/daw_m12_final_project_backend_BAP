@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const Post = require('../database/models/Post');
+const Availability = require('../database/models/Availability');
 const verifyToken = require('./middlewares/auth');
 const { verifyPostalCodeInParams } = require('./middlewares/postalCodes');
 
@@ -140,6 +141,8 @@ router.delete('/:id', verifyToken, async (req, res, next) => {
     }
 
     await Post.findByIdAndDelete(id);
+    //delete availability to this post
+    await Availability.findOneAndRemove({ postId: id });
 
     res.status(200);
     return res.json({
