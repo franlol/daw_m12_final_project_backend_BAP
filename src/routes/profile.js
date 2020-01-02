@@ -46,14 +46,8 @@ router.put(
         ...req.session.user,
         ...req.body,
         location: {
-          type: 'Point',
-          coordinates: [location.latitude, location.longitude],
-          place: location.place,
-          country_code: location.country_code,
-          state_code: location.state_code,
-          state: location.state,
-          province: location.province,
-          place: location.place
+          ...location,
+          type: 'Point'
         }
       };
 
