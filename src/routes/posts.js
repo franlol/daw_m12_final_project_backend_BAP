@@ -157,6 +157,7 @@ router.put('/:id', verifyToken, async (req, res, next) => {
   const { id } = req.params;
   const { title, description } = req.body;
   const { user } = req.session;
+  const location = req.session.user.location;
 
   try {
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -191,7 +192,10 @@ router.put('/:id', verifyToken, async (req, res, next) => {
       });
     }
 
-    const test = await Post.findOneAndUpdate({ _id: req.body._id }, req.body);
+    const test = await Post.findOneAndUpdate(
+      { _id: req.body._id },
+      { ...req.body, location }
+    );
 
     res.status(200);
     res.json({
