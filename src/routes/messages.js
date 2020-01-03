@@ -80,4 +80,59 @@ router.get('/:profileId', verifyToken, async (req, res) => {
   }
 });
 
+
+router.put('/:id', verifyToken, async (req, res, next) => {
+  const { id } = req.params;
+  const { postId } = req.body;
+  const { user } = req.session;
+
+  try {
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.status(422);
+      return res.json({
+        message: 'Invalid Post ID.'
+      });
+    }
+
+    const message = await Message.findById(id)
+      .populate(postId)
+      .lean();
+
+    if (!message) {
+      res.status(404);
+      return res.json({
+        message: 'Message not found'
+      });
+    }
+
+    const post = await Post.findById(message.postId)
+      .populate('owner')
+      .lean();
+
+    if (!post) {
+      res.status(404);
+      return res.json({
+        message: 'Post not found.'
+      });
+    }
+
+    if (!post.owner._id.equals(user._id)) {
+      res.status(401);
+      return res.json({
+        message: 'You cannot update that post.'
+      });
+    }
+
+    await Message.findOneAndUpdate({ _id: id }, req.body);
+
+    res.status(200);
+    res.json({
+      message: 'Message updated'
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
