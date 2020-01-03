@@ -34,7 +34,7 @@ router.post('/', verifyToken, async (req, res) => {
       userId: req.session.user._id,
       text: message,
       title,
-      status: false
+      status: null
     });
 
     await newMessage.populate('userId', 'image username').execPopulate();
@@ -83,7 +83,7 @@ router.get('/:profileId', verifyToken, async (req, res) => {
 
 router.put('/:id', verifyToken, async (req, res, next) => {
   const { id } = req.params;
-  const { postId } = req.body;
+  const { status } = req.body;
   const { user } = req.session;
 
   try {
@@ -96,7 +96,7 @@ router.put('/:id', verifyToken, async (req, res, next) => {
     }
 
     const message = await Message.findById(id)
-      .populate(postId)
+      .populate('postId')
       .lean();
 
     if (!message) {
@@ -124,7 +124,7 @@ router.put('/:id', verifyToken, async (req, res, next) => {
       });
     }
 
-    await Message.findOneAndUpdate({ _id: id }, req.body);
+    await Message.findOneAndUpdate({ _id: id }, {$set:{status: status}});
 
     res.status(200);
     res.json({
