@@ -77,18 +77,12 @@ const updateTestingUser = async () => {
   expect(res.body.updatedUser).toHaveProperty('postalCode', '08730');
   expect(res.body.updatedUser).toHaveProperty('location');
 
-  expect(res.body.updatedUser.location).toHaveProperty('accuracy');
-  expect(res.body.updatedUser.location).toHaveProperty('community');
-  expect(res.body.updatedUser.location).toHaveProperty('community_code');
   expect(res.body.updatedUser.location).toHaveProperty('country_code');
-  expect(res.body.updatedUser.location).toHaveProperty('latitude');
-  expect(res.body.updatedUser.location).toHaveProperty('longitude');
+  expect(res.body.updatedUser.location).toHaveProperty('coordinates');
   expect(res.body.updatedUser.location).toHaveProperty('place');
   expect(res.body.updatedUser.location).toHaveProperty('province');
-  expect(res.body.updatedUser.location).toHaveProperty('province_code');
   expect(res.body.updatedUser.location).toHaveProperty('state');
   expect(res.body.updatedUser.location).toHaveProperty('state_code');
-  expect(res.body.updatedUser.location).toHaveProperty('zip_code');
 
   expect(res.status).toEqual(200);
 };

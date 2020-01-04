@@ -85,36 +85,4 @@ router.put('/:postId', verifyToken, async (req, res, next) => {
   }
 });
 
-router.delete('/:postId', verifyToken, async (req, res, next) => {
-  const { postId } = req.params;
-  const { user } = req.session;
-
-  try {
-    if (!mongoose.Types.ObjectId.isValid(postId)) {
-      res.status(422);
-      return res.json({
-        message: 'Invalid Post Id'
-      });
-    }
-
-    const availability = await Availability.findOne({ postId });
-
-    if (!availability.owner.equals(user._id)) {
-      res.status(401);
-      return res.json({
-        message: 'You can not delete the availability'
-      });
-    }
-
-    await Availability.findOneAndRemove({ postId });
-
-    res.status(200);
-    return res.json({
-      message: 'Availability deleted'
-    });
-  } catch (err) {
-    next(err);
-  }
-});
-
 module.exports = router;

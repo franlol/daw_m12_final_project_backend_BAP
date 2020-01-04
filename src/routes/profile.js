@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 
 const User = require('../database/models/User');
+const Post = require('../database/models/Post');
 
 const { verifyPostalCodeInBody } = require('./middlewares/postalCodes');
 const verifyToken = require('./middlewares/auth');
@@ -35,17 +36,37 @@ router.put(
   async (req, res, next) => {
     try {
       delete req.body.password;
+      const { location } = res;
       await User.findOneAndUpdate(
         { _id: req.session.user._id },
-        { ...req.body }
+        {
+          ...req.body,
+          location: {
+            type: 'Point',
+            coordinates: [location.latitude, location.longitude],
+            place: location.place,
+            country_code: location.country_code,
+            state_code: location.state_code,
+            state: location.state,
+            province: location.province,
+            place: location.place
+          }
+        }
       ).select('-password');
-
-      const { location } = res;
 
       const updated = {
         ...req.session.user,
         ...req.body,
-        location
+        location: {
+          type: 'Point',
+          coordinates: [location.latitude, location.longitude],
+          place: location.place,
+          country_code: location.country_code,
+          state_code: location.state_code,
+          state: location.state,
+          province: location.province,
+          place: location.place
+        }
       };
 
       delete updated.exp;
