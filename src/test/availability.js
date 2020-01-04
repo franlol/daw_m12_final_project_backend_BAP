@@ -53,6 +53,10 @@ const updateAvailability = async () => {
       calendar
     });
 
+  await request(app)
+    .delete(`/posts/${post._id}`)
+    .set({ ['access-token']: `Bearer ${token}` });
+
   expect(res.status).toEqual(200);
   expect(res.body.message).toEqual('Availability updated');
 };
@@ -69,6 +73,7 @@ const updateAvailabilityWithIvaldPostId = async () => {
 
   expect(res.status).toEqual(422);
   expect(res.body.message).toEqual('Invalid Post Id');
+
 };
 
 module.exports = {
